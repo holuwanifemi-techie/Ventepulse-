@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { createLead } from '../../lib/leadService';
 import { LeadStage } from '../../types/database';
-import { X, UserPlus, Phone, Mail, Building, Tag, Layers, FileText, Loader2, AlertCircle } from 'lucide-react';
+import { X, UserPlus, Phone, Mail, Building, Tag, Layers, FileText, Loader2, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
 
 const STAGE_OPTIONS: LeadStage[] = [
   'New',
@@ -45,6 +45,64 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasRestoredDraft, setHasRestoredDraft] = useState(false);
+
+  const getDraftKey = () => (user ? `ventepulse_lead_draft_${user.id}` : null);
+
+  // Restore draft when modal opens
+  useEffect(() => {
+    if (isOpen && user) {
+      const draftKey = getDraftKey();
+      if (draftKey) {
+        const savedDraftStr = localStorage.getItem(draftKey);
+        if (savedDraftStr) {
+          try {
+            const draft = JSON.parse(savedDraftStr);
+            if (draft.fullName || draft.phone || draft.email || draft.company || draft.notes) {
+              setFullName(draft.fullName || '');
+              setPhone(draft.phone || '');
+              setEmail(draft.email || '');
+              setCompany(draft.company || '');
+              setLeadSource(draft.leadSource || 'Direct Call');
+              setStage(draft.stage || 'New');
+              setNotes(draft.notes || '');
+              setHasRestoredDraft(true);
+            }
+          } catch (e) {
+            console.error('Failed to parse lead draft:', e);
+          }
+        }
+      }
+    }
+  }, [isOpen, user]);
+
+  // Auto-save draft on field change if modal is open
+  useEffect(() => {
+    if (isOpen && user) {
+      const draftKey = getDraftKey();
+      if (draftKey) {
+        if (fullName.trim() || phone.trim() || email.trim() || company.trim() || notes.trim()) {
+          const draft = { fullName, phone, email, company, leadSource, stage, notes };
+          localStorage.setItem(draftKey, JSON.stringify(draft));
+        }
+      }
+    }
+  }, [isOpen, user, fullName, phone, email, company, leadSource, stage, notes]);
+
+  const handleDiscardDraft = () => {
+    const draftKey = getDraftKey();
+    if (draftKey) {
+      localStorage.removeItem(draftKey);
+    }
+    setFullName('');
+    setPhone('');
+    setEmail('');
+    setCompany('');
+    setLeadSource('Direct Call');
+    setStage('New');
+    setNotes('');
+    setHasRestoredDraft(false);
+  };
 
   if (!isOpen) return null;
 
@@ -79,7 +137,11 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
     if (error) {
       setErrorMessage(error.message);
     } else {
-      // Reset form
+      // Clear draft on successful database insertion
+      const draftKey = getDraftKey();
+      if (draftKey) {
+        localStorage.removeItem(draftKey);
+      }
       setFullName('');
       setPhone('');
       setEmail('');
@@ -87,6 +149,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
       setLeadSource('Direct Call');
       setStage('New');
       setNotes('');
+      setHasRestoredDraft(false);
       onSuccess();
       onClose();
     }
@@ -104,7 +167,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">Add New Lead</h2>
-              <p className="text-xs text-slate-400">Capture a new high-ticket prospect</p>
+              <p className="text-xs text-slate-400">Capture a new prospect</p>
             </div>
           </div>
           <button
@@ -115,6 +178,23 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Restored Draft Alert Banner */}
+        {hasRestoredDraft && (
+          <div className="p-3 bg-indigo-950/40 border border-indigo-500/30 rounded-2xl flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 text-indigo-300 font-medium">
+              <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />
+              <span>Restored unfinished lead draft</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleDiscardDraft}
+              className="text-[11px] font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1 cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Discard Draft
+            </button>
+          </div>
+        )}
 
         {/* Error Alert */}
         {errorMessage && (
@@ -140,7 +220,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
             />
           </div>
 
-          {/* Phone Number */}
+          {/* Phone Number (Accepts with or without country code) */}
           <div className="space-y-1">
             <label className="block text-xs font-semibold text-slate-300">
               Phone / WhatsApp Number <span className="text-indigo-400">*</span>
@@ -151,11 +231,12 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1 234 567 8900"
+                placeholder="+234 801 234 5678 or 08012345678"
                 required
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
             </div>
+            <p className="text-[10px] text-slate-500">Accepts numbers with (+234...) or without (080...) country code.</p>
           </div>
 
           {/* Email & Company Grid */}
@@ -258,7 +339,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
           </div>
 
           {/* Submit Button */}
-          <div className="pt-2">
+          <div className="pt-2 flex items-center gap-2">
             <button
               type="submit"
               disabled={loading}

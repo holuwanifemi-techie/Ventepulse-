@@ -40,7 +40,15 @@ export const AIMessagePreviewModal: React.FC<AIMessagePreviewModalProps> = ({
   };
 
   const handleSendWhatsApp = () => {
-    const cleanPhone = lead.whatsapp_number.replace(/[^0-9]/g, '');
+    let cleanPhone = lead.whatsapp_number.trim().replace(/[^0-9+]/g, '');
+
+    // If starting with leading 0 (e.g. 08012345678), convert to international format (234...) if 11 digits
+    if (cleanPhone.startsWith('0') && cleanPhone.length === 11) {
+      cleanPhone = '234' + cleanPhone.substring(1);
+    } else {
+      cleanPhone = cleanPhone.replace(/[^0-9]/g, '');
+    }
+
     const encodedText = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedText}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');

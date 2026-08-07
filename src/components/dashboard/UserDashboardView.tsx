@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardMetrics, DashboardMetrics } from '../../lib/dashboardService';
 import { Lead, Business } from '../../types/database';
+import { supabase } from '../../lib/supabase';
 import { AIMessagePreviewModal } from '../leads/AIMessagePreviewModal';
+import { ImportLeadsModal } from '../leads/ImportLeadsModal';
 import {
   AlertTriangle,
   Clock,
@@ -18,7 +20,8 @@ import {
   Loader2,
   Sparkles,
   RefreshCw,
-  Plus
+  Plus,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface UserDashboardViewProps {
@@ -37,6 +40,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedLeadForWhatsApp, setSelectedLeadForWhatsApp] = useState<Lead | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const fetchMetrics = async () => {
     setLoading(true);
@@ -47,6 +51,22 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
 
   useEffect(() => {
     fetchMetrics();
+
+    // Attach Realtime listener for live analytics auto-updates
+    const channel = supabase
+      .channel(`realtime-dashboard-${userId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'leads', filter: `user_id=eq.${userId}` },
+        () => {
+          fetchMetrics();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userId]);
 
   const formatDate = (dateString: string) => {
@@ -94,7 +114,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3">
         <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-        <p className="text-xs text-slate-400 font-medium">Analyzing Daily Priorities & Analytics...</p>
+        <p className="text-xs text-slate-400 font-medium">Loading Real-Time Analytics...</p>
       </div>
     );
   }
@@ -108,10 +128,10 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">
             {business.business_name}
           </span>
-          <h2 className="text-lg font-extrabold text-white">Daily Focus & Priority Hub</h2>
+          <h2 className="text-lg font-extrabold text-white">Daily Focus & Live Analytics</h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={fetchMetrics}
@@ -119,6 +139,15 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
             title="Refresh Metrics"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsImportModalOpen(true)}
+            className="py-2.5 px-3.5 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+            <span>Import Leads</span>
           </button>
 
           <button
@@ -320,7 +349,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
       {/* ---------------- 4. PERFORMANCE SUMMARY CARDS ---------------- */}
       <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-emerald-400" /> Sales Performance Summary
+          <TrendingUp className="w-4 h-4 text-emerald-400" /> Live Performance Summary
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -361,23 +390,23 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         </div>
       </div>
 
-      {/* ---------------- 5. ANALYTICS (2 SIMPLE CHARTS) ---------------- */}
+      {/* ---------------- 5. ANALYTICS (2 SIMPLE CHARTS USING LIVE DATA) ---------------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* Chart 1: Follow-up Activity over time */}
+        {/* Chart 1: Live Follow-up Activity */}
         <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-400" /> Chart 1: Follow-up Activity
+            <Activity className="w-4 h-4 text-emerald-400" /> Live Follow-up Activity
           </h3>
           <p className="text-xs text-slate-400">Completed follow-ups over the last 7 days</p>
 
           <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-slate-800">
             {metrics?.activityData.map((d, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                <div className="w-full bg-emerald-500/20 rounded-t-lg relative flex items-end justify-center" style={{ height: `${(d.total / 5) * 100}%` }}>
+                <div className="w-full bg-emerald-500/20 rounded-t-lg relative flex items-end justify-center" style={{ height: `${Math.max((d.total / (metrics.totalLeads || 5)) * 100, 15)}%` }}>
                   <div
                     className="w-full bg-emerald-500 rounded-t-lg transition-all"
-                    style={{ height: `${(d.completed / d.total) * 100}%` }}
+                    style={{ height: `${(d.completed / (d.total || 1)) * 100}%` }}
                   />
                 </div>
                 <span className="text-[10px] text-slate-400 font-semibold">{d.label}</span>
@@ -386,10 +415,10 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Chart 2: Lead Pipeline Distribution */}
+        {/* Chart 2: Live Lead Pipeline Distribution */}
         <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-400" /> Chart 2: Lead Pipeline
+            <Layers className="w-4 h-4 text-indigo-400" /> Live Lead Pipeline
           </h3>
           <p className="text-xs text-slate-400">Leads grouped by current stage</p>
 
@@ -402,7 +431,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
                 </div>
                 <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
                   <div
-                    className="h-full bg-emerald-500 rounded-full"
+                    className="h-full bg-emerald-500 rounded-full transition-all"
                     style={{ width: `${Math.max(p.percentage, p.count > 0 ? 5 : 0)}%` }}
                   />
                 </div>
@@ -419,6 +448,14 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         business={business}
         isOpen={!!selectedLeadForWhatsApp}
         onClose={() => setSelectedLeadForWhatsApp(null)}
+      />
+
+      {/* Import Leads Modal Trigger */}
+      <ImportLeadsModal
+        businessId={business.id}
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={fetchMetrics}
       />
 
     </div>

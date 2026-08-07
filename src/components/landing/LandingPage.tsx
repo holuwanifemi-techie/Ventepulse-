@@ -10,12 +10,10 @@ import {
   ShieldCheck,
   TrendingUp,
   Briefcase,
-  ChevronRight,
   Clock,
   Plus,
   FileSpreadsheet,
   Zap,
-  ArrowRight,
   X,
   Mail,
   Phone,
@@ -67,10 +65,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             <button
               type="button"
               onClick={() => onNavigateToAuth('register')}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-600/15 flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-600/15 cursor-pointer"
             >
-              <span>Get Started</span>
-              <ChevronRight className="w-4 h-4" />
+              Get Started
             </button>
           </div>
 
@@ -97,10 +94,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center cursor-pointer"
               >
-                <span>Get Started</span>
-                <ArrowRight className="w-5 h-5" />
+                Get Started
               </button>
 
               <button
@@ -428,10 +424,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             <button
               type="button"
               onClick={() => onNavigateToAuth('register')}
-              className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center cursor-pointer"
             >
-              <span>Get Started</span>
-              <ArrowRight className="w-5 h-5" />
+              Get Started
             </button>
 
             <button

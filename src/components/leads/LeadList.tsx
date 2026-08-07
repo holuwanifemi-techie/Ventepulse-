@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getLeads } from '../../lib/leadService';
 import { checkIsAdmin } from '../../lib/adminService';
+import { supabase } from '../../lib/supabase';
 import { Lead, LeadStage, Business } from '../../types/database';
 import { AddLeadModal } from './AddLeadModal';
 import { EditLeadModal } from './EditLeadModal';
 import { LeadDetailsModal } from './LeadDetailsModal';
+import { ImportLeadsModal } from './ImportLeadsModal';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
-import { Search, Plus, Phone, Building, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter } from 'lucide-react';
+import { Search, Plus, Phone, Building, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
   'All',
@@ -35,6 +37,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
 
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [selectedLeadForEdit, setSelectedLeadForEdit] = useState<Lead | null>(null);
   const [selectedLeadForDetails, setSelectedLeadForDetails] = useState<Lead | null>(null);
 
@@ -51,6 +54,22 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
 
     if (user) {
       checkIsAdmin(user.id, user.email).then(setIsAdmin);
+
+      // Attach Real-Time Postgres listener for instant no-refresh lead updates
+      const channel = supabase
+        .channel(`realtime-leadlist-${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'leads', filter: `user_id=eq.${user.id}` },
+          () => {
+            fetchLeads();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [fetchLeads, user]);
 
@@ -98,6 +117,16 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
               <span className="hidden sm:inline">Admin</span>
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => setIsImportModalOpen(true)}
+            className="py-2 px-2.5 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Import Leads from Excel/CSV"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+            <span className="hidden sm:inline">Import</span>
+          </button>
 
           <button
             type="button"
@@ -222,14 +251,24 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
                   </p>
                 </div>
                 {!(searchQuery || activeStageFilter !== 'All') && (
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="py-2.5 px-5 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 inline-flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add Your First Lead</span>
-                  </button>
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddModalOpen(true)}
+                      className="py-2.5 px-5 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add Your First Lead</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsImportModalOpen(true)}
+                      className="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-teal-300 font-semibold text-xs rounded-xl border border-teal-500/30 inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+                      <span>Import Leads</span>
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
@@ -287,6 +326,13 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
         businessId={business.id}
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        onSuccess={fetchLeads}
+      />
+
+      <ImportLeadsModal
+        businessId={business.id}
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
         onSuccess={fetchLeads}
       />
 
