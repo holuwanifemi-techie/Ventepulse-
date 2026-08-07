@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { AuthContextType } from '../types/auth';
+import { formatAuthError } from '../lib/authErrorTranslator';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -44,25 +45,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
       });
-      return { session: data?.session ?? null, error: error ? new Error(error.message) : null };
+
+      if (error) {
+        return { session: null, error: new Error(formatAuthError(error)) };
+      }
+
+      // If user was created and session is returned, user is signed in
+      if (data?.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+      }
+
+      return { session: data?.session ?? null, error: null };
     } catch (err: any) {
-      return { session: null, error: new Error(err.message || 'An unexpected error occurred during sign up.') };
+      return { session: null, error: new Error(formatAuthError(err)) };
     }
   };
 
   // Sign in with email & password
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
         password,
       });
-      return { error: error ? new Error(error.message) : null };
+
+      if (error) {
+        return { error: new Error(formatAuthError(error)) };
+      }
+
+      if (data?.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+      }
+
+      return { error: null };
     } catch (err: any) {
-      return { error: new Error(err.message || 'An unexpected error occurred during sign in.') };
+      return { error: new Error(formatAuthError(err)) };
     }
   };
 
@@ -70,9 +92,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      return { error: error ? new Error(error.message) : null };
+      setUser(null);
+      setSession(null);
+      return { error: error ? new Error(formatAuthError(error)) : null };
     } catch (err: any) {
-      return { error: new Error(err.message || 'An unexpected error occurred during sign out.') };
+      setUser(null);
+      setSession(null);
+      return { error: new Error(formatAuthError(err)) };
     }
   };
 

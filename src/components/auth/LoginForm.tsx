@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { isValidEmail, formatAuthError } from '../../lib/authErrorTranslator';
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export const LoginForm: React.FC = () => {
@@ -14,17 +15,24 @@ export const LoginForm: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!email || !password) {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
       setErrorMessage('Please enter both email and password.');
       return;
     }
 
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
     setLoading(true);
-    const { error } = await signIn(email.trim(), password);
+    const { error } = await signIn(cleanEmail, password);
     setLoading(false);
 
     if (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(formatAuthError(error));
     }
   };
 

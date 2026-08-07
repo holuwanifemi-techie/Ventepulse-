@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { isValidEmail, formatAuthError } from '../../lib/authErrorTranslator';
 import { Mail, Lock, Loader2, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 export const RegisterForm: React.FC = () => {
@@ -18,8 +19,15 @@ export const RegisterForm: React.FC = () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!email || !password || !confirmPassword) {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password || !confirmPassword) {
       setErrorMessage('Please fill in all required fields.');
+      return;
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
@@ -34,13 +42,13 @@ export const RegisterForm: React.FC = () => {
     }
 
     setLoading(true);
-    const { error } = await signUp(email.trim(), password);
+    const { error } = await signUp(cleanEmail, password);
     setLoading(false);
 
     if (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(formatAuthError(error));
     } else {
-      setSuccessMessage('Account created successfully! Logging you in...');
+      setSuccessMessage('Account created successfully! Redirecting to business setup...');
     }
   };
 
