@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AiSignalNetworkCanvas } from './AiSignalNetworkCanvas';
 import {
   MessageSquare,
   Calendar,
@@ -74,13 +75,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </header>
 
-      {/* ---------------- HERO SECTION ---------------- */}
-      <section className="bg-slate-50 border-b border-slate-200/70 py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      {/* ---------------- HERO SECTION WITH THREE.JS AI CANVAS ---------------- */}
+      <section className="relative bg-slate-50/90 border-b border-slate-200/70 py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        
+        {/* Three.js AI Intelligence Network Background Canvas */}
+        <AiSignalNetworkCanvas />
+
+        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Hero Text Column */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
             
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>AI-Powered Follow-Up Intelligence</span>
+            </div>
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12]">
               Never lose a lead. <br />
               <span className="text-emerald-600">Never miss a follow-up.</span>
@@ -112,7 +122,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           {/* Right Mobile Dashboard Mockup */}
           <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full">
-            <div className="bg-slate-900 text-white border-8 border-slate-800 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left">
+            <div className="bg-slate-900/95 backdrop-blur-xl text-white border-8 border-slate-800 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left">
               
               <div className="w-20 h-3.5 bg-slate-800 rounded-full mx-auto mb-2" />
 
