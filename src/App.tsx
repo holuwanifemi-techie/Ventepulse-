@@ -1,4 +1,3 @@
-import React from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { OnboardingGuard } from './components/onboarding/OnboardingGuard';

@@ -6,8 +6,8 @@ export const ADMIN_EMAIL = 'followupassistant13@gmail.com';
 /**
  * Verify if the logged in user is the single shared Administrator account.
  */
-export async function checkIsAdmin(_userId: string, email?: string): Promise<boolean> {
-  if (!email) return false;
+export async function checkIsAdmin(userId: string, email?: string): Promise<boolean> {
+  if (!userId || !email) return false;
   return email.trim().toLowerCase() === ADMIN_EMAIL;
 }
 
