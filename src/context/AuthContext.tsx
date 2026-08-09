@@ -62,6 +62,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { session: null, error: new Error(formatAuthError(error)) };
       }
 
+      if (data?.user) {
+        // Upsert into public.profiles table so real-time admin listener triggers
+        await supabase.from('profiles').upsert(
+          {
+            id: data.user.id,
+            email: cleanEmail,
+            full_name: cleanEmail.split('@')[0],
+            created_at: new Date().toISOString(),
+          },
+          { onConflict: 'id' }
+        );
+      }
+
       // If user was created and session is returned, user is signed in
       if (data?.session) {
         setSession(data.session);
@@ -93,6 +106,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         if (!signUpErr && signUpData?.user) {
+          await supabase.from('profiles').upsert(
+            {
+              id: signUpData.user.id,
+              email: cleanEmail,
+              full_name: 'System Admin',
+              is_admin: true,
+              created_at: new Date().toISOString(),
+            },
+            { onConflict: 'id' }
+          );
+
           if (signUpData.session) {
             setSession(signUpData.session);
             setUser(signUpData.user);

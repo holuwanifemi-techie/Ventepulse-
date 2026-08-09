@@ -65,7 +65,6 @@ export interface AdminPlatformStats {
   totalBusinesses: number;
   totalLeads: number;
   registrationsToday: number;
-  businessTypeBreakdown: Record<string, number>;
   recentUsers: {
     id: string;
     email: string;

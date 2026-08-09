@@ -22,7 +22,16 @@ export async function deleteUserAdmin(targetUserId: string): Promise<{ error: Er
       return { error: new Error('Unauthorized access. Admin privileges required.') };
     }
 
-    // Delete user from public.profiles (Cascades to businesses, leads, followups)
+    // 1. Delete associated followups for target user
+    await supabase.from('followups').delete().eq('user_id', targetUserId);
+
+    // 2. Delete associated leads for target user
+    await supabase.from('leads').delete().eq('user_id', targetUserId);
+
+    // 3. Delete associated business profile for target user
+    await supabase.from('businesses').delete().eq('user_id', targetUserId);
+
+    // 4. Delete profile from public.profiles
     const { error: profileErr } = await supabase
       .from('profiles')
       .delete()
@@ -50,7 +59,7 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
       return { data: null, error: new Error('Unauthorized access. Admin privileges required.') };
     }
 
-    // 1. Fetch total users (profiles)
+    // 1. Fetch total users from public.profiles using existing table columns
     const { data: profiles, error: profilesErr } = await supabase
       .from('profiles')
       .select('id, email, full_name, created_at')
@@ -76,24 +85,6 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
     const todayStr = new Date().toISOString().split('T')[0];
     const registrationsToday = profiles?.filter(p => p.created_at?.startsWith(todayStr)).length || 0;
 
-    // Calculate Business Type Breakdown
-    const businessTypeBreakdown: Record<string, number> = {
-      'Real Estate': 0,
-      'Car Dealership': 0,
-      'High-Ticket Closer': 0,
-      'Insurance': 0,
-      'Financial Services': 0,
-      'Other': 0,
-    };
-
-    businesses?.forEach(b => {
-      if (b.business_type && businessTypeBreakdown[b.business_type] !== undefined) {
-        businessTypeBreakdown[b.business_type] += 1;
-      } else if (b.business_type) {
-        businessTypeBreakdown['Other'] = (businessTypeBreakdown['Other'] || 0) + 1;
-      }
-    });
-
     // Map Recent Users with their Business Profile & Lead Counts
     const businessMap = new Map(businesses?.map(b => [b.user_id, b]) || []);
     
@@ -103,12 +94,12 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
       leadCountMap.set(l.user_id, (leadCountMap.get(l.user_id) || 0) + 1);
     });
 
-    const recentUsers = (profiles || []).slice(0, 20).map(p => {
+    const recentUsers = (profiles || []).map(p => {
       const b = businessMap.get(p.id);
       return {
         id: p.id,
         email: p.email,
-        full_name: p.full_name,
+        full_name: p.full_name || p.email?.split('@')[0] || 'User',
         created_at: p.created_at,
         business_name: b?.business_name,
         business_type: b?.business_type,
@@ -122,7 +113,6 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
         totalBusinesses,
         totalLeads,
         registrationsToday,
-        businessTypeBreakdown,
         recentUsers,
       },
       error: null,

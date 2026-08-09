@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getAdminPlatformStats, deleteUserAdmin, ADMIN_EMAIL } from '../../lib/adminService';
+import { supabase } from '../../lib/supabase';
 import { AdminPlatformStats } from '../../types/database';
 import {
   ShieldAlert,
@@ -49,7 +50,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
 
   useEffect(() => {
     fetchStats();
-  }, [user]);
+
+    if (isAuthorizedAdmin) {
+      // Attach Real-Time Postgres listener for instant no-refresh Admin updates on new users or deletions
+      const channel = supabase
+        .channel('realtime-admin-dashboard')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'profiles' },
+          () => {
+            fetchStats();
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'businesses' },
+          () => {
+            fetchStats();
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'leads' },
+          () => {
+            fetchStats();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [user, isAuthorizedAdmin]);
 
   const handleDeleteUser = async (targetUserId: string, targetEmail: string) => {
     if (targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -63,6 +96,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
       setDeletingId(null);
 
       if (!error) {
+        // Immediate UI state filter before subscription sync
+        setStats(prev => prev ? {
+          ...prev,
+          totalUsers: Math.max(0, prev.totalUsers - 1),
+          recentUsers: prev.recentUsers.filter(u => u.id !== targetUserId),
+        } : null);
         fetchStats();
       } else {
         alert(`Failed to delete user: ${error.message}`);
@@ -166,7 +205,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
         {loading && !stats ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-            <p className="text-xs text-slate-400">Loading Platform Growth Metrics...</p>
+            <p className="text-xs text-slate-400">Loading Real-Time Platform Metrics...</p>
           </div>
         ) : stats ? (
           <>
@@ -235,28 +274,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
 
             </div>
 
-            {/* INDUSTRY VERTICAL BREAKDOWN */}
-            <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-emerald-400" /> Business Type Distribution
-              </h2>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                {Object.entries(stats.businessTypeBreakdown).map(([type, count]) => (
-                  <div key={type} className="p-3 bg-slate-950/70 border border-slate-800/80 rounded-2xl space-y-1">
-                    <div className="text-[11px] text-slate-400 font-medium truncate">{type}</div>
-                    <div className="text-lg font-bold text-white flex items-center justify-between">
-                      <span>{count}</span>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">
-                        {stats.totalBusinesses > 0 ? `${Math.round((count / stats.totalBusinesses) * 100)}%` : '0%'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* RECENT USER REGISTRATIONS TABLE WITH DELETE BUTTON */}
+            {/* REAL-TIME REGISTERED USERS TABLE */}
             <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-5 shadow-xl">
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -264,7 +282,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
                   <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
                     <Users className="w-4 h-4 text-emerald-400" /> User Registrations Monitor
                   </h2>
-                  <p className="text-xs text-slate-400">Monitoring user sign-ups and lead activity</p>
+                  <p className="text-xs text-slate-400">Real-time database feed of registered users and lead activity</p>
                 </div>
 
                 <div className="relative w-full sm:w-64">
@@ -283,6 +301,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
                 <table className="w-full text-left text-xs text-slate-300">
                   <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-semibold tracking-wider border-b border-slate-800">
                     <tr>
+                      <th className="py-3 px-4">User Name</th>
                       <th className="py-3 px-4">User Email</th>
                       <th className="py-3 px-4">Business Name</th>
                       <th className="py-3 px-4">Industry Type</th>
@@ -294,14 +313,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
                   <tbody className="divide-y divide-slate-800/60">
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="py-8 text-center text-slate-500">
-                          No registered users found matching your search.
+                        <td colSpan={7} className="py-8 text-center text-slate-500">
+                          No registered users found in database.
                         </td>
                       </tr>
                     ) : (
                       filteredUsers.map((userItem) => (
                         <tr key={userItem.id} className="hover:bg-slate-950/40 transition-colors">
                           <td className="py-3.5 px-4 font-semibold text-white">
+                            {userItem.full_name || 'User'}
+                          </td>
+                          <td className="py-3.5 px-4 text-slate-300">
                             {userItem.email}
                           </td>
                           <td className="py-3.5 px-4 text-slate-300">
