@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getBusinessProfile } from '../../lib/businessService';
+import { ADMIN_EMAIL } from '../../lib/adminService';
 import { Business } from '../../types/database';
 import { BusinessSetupForm } from './BusinessSetupForm';
 import { LeadList } from '../leads/LeadList';
@@ -12,6 +13,8 @@ export const OnboardingGuard: React.FC = () => {
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [viewAdmin, setViewAdmin] = useState<boolean>(false);
+
+  const isAdminUser = user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
   const checkOnboarding = useCallback(async () => {
     if (!user) {
@@ -26,8 +29,11 @@ export const OnboardingGuard: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
+    if (isAdminUser) {
+      setViewAdmin(true);
+    }
     checkOnboarding();
-  }, [checkOnboarding]);
+  }, [checkOnboarding, isAdminUser]);
 
   if (loading) {
     return (
@@ -40,8 +46,8 @@ export const OnboardingGuard: React.FC = () => {
     );
   }
 
-  // If user requested Admin View
-  if (viewAdmin) {
+  // If user requested or qualified for Admin View
+  if (viewAdmin && isAdminUser) {
     return <AdminDashboard onBackToApp={() => setViewAdmin(false)} />;
   }
 

@@ -1,14 +1,14 @@
 import { supabase } from './supabase';
 import { AdminPlatformStats } from '../types/database';
 
-export const ADMIN_EMAIL = 'followupassistant13@gmail.com';
+export const ADMIN_EMAIL = 'ventepulse@gmail.com';
 
 /**
  * Verify if the logged in user is the single shared Administrator account.
  */
 export async function checkIsAdmin(userId: string, email?: string): Promise<boolean> {
   if (!userId || !email) return false;
-  return email.trim().toLowerCase() === ADMIN_EMAIL;
+  return email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
 
 /**
@@ -18,7 +18,7 @@ export async function deleteUserAdmin(targetUserId: string): Promise<{ error: Er
   try {
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL) {
+    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
       return { error: new Error('Unauthorized access. Admin privileges required.') };
     }
 
@@ -46,7 +46,7 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
     const { data: { user } } = await supabase.auth.getUser();
 
     // Strict Admin Authorization Check
-    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL) {
+    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
       return { data: null, error: new Error('Unauthorized access. Admin privileges required.') };
     }
 

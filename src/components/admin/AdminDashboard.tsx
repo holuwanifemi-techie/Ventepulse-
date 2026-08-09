@@ -30,7 +30,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
   const [searchQuery, setSearchQuery] = useState('');
 
   // Strict check if current logged in email is the single admin account
-  const isAuthorizedAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL;
+  const isAuthorizedAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
   const fetchStats = async () => {
     if (!isAuthorizedAdmin) return;
@@ -52,7 +52,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
   }, [user]);
 
   const handleDeleteUser = async (targetUserId: string, targetEmail: string) => {
-    if (targetEmail.toLowerCase() === ADMIN_EMAIL) {
+    if (targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
       alert('Cannot delete the master administrator account.');
       return;
     }
@@ -121,7 +121,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-20">
       
-      {/* Admin Top Header - "CRM" reference removed */}
+      {/* Admin Top Header */}
       <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
@@ -323,7 +323,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
                             {userItem.leads_count}
                           </td>
                           <td className="py-3.5 px-4 text-right">
-                            {userItem.email.toLowerCase() !== ADMIN_EMAIL && (
+                            {userItem.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && (
                               <button
                                 type="button"
                                 onClick={() => handleDeleteUser(userItem.id, userItem.email)}
