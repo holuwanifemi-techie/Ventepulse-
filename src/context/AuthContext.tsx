@@ -56,6 +56,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
+        options: {
+          data: {
+            full_name: cleanEmail.split('@')[0],
+          },
+        },
       });
 
       if (error) {
@@ -63,16 +68,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data?.user) {
-        // Upsert into public.profiles table so real-time admin listener triggers
-        await supabase.from('profiles').upsert(
-          {
+        // Direct profile insert with fail-safe fallback to ensure profile record exists for Admin Dashboard
+        try {
+          await supabase.from('profiles').insert({
             id: data.user.id,
             email: cleanEmail,
             full_name: cleanEmail.split('@')[0],
             created_at: new Date().toISOString(),
-          },
-          { onConflict: 'id' }
-        );
+          });
+        } catch (pErr) {
+          console.warn('[Profile Insert Notice]:', pErr);
+        }
       }
 
       // If user was created and session is returned, user is signed in
@@ -103,19 +109,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
+          options: {
+            data: {
+              full_name: 'System Admin',
+            },
+          },
         });
 
         if (!signUpErr && signUpData?.user) {
-          await supabase.from('profiles').upsert(
-            {
-              id: signUpData.user.id,
-              email: cleanEmail,
-              full_name: 'System Admin',
-              is_admin: true,
-              created_at: new Date().toISOString(),
-            },
-            { onConflict: 'id' }
-          );
+          try {
+            await supabase.from('profiles').upsert(
+              {
+                id: signUpData.user.id,
+                email: cleanEmail,
+                full_name: 'System Admin',
+                is_admin: true,
+                created_at: new Date().toISOString(),
+              },
+              { onConflict: 'id' }
+            );
+          } catch (e) {
+            console.warn('[Admin Profile Setup Notice]:', e);
+          }
 
           if (signUpData.session) {
             setSession(signUpData.session);

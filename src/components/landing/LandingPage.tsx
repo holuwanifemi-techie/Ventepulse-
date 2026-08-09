@@ -43,11 +43,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
           
           {/* Logo */}
           <div 
-            className="flex items-center gap-2.5 cursor-pointer" 
+            className="flex items-center gap-2.5 cursor-pointer group" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
-              <Zap className="w-5 h-5 fill-current" />
+            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
+              <Zap className="w-5 h-5 fill-current text-slate-950" />
             </div>
             <span className="text-xl font-bold tracking-tight text-slate-900">
               Ventepulse
@@ -59,14 +59,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             <button
               type="button"
               onClick={() => onNavigateToAuth('login')}
-              className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 cursor-pointer"
+              className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
             >
               Sign In
             </button>
             <button
               type="button"
               onClick={() => onNavigateToAuth('register')}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-600/15 cursor-pointer"
+              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
             >
               Get Started
             </button>
@@ -75,23 +75,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </header>
 
-      {/* ---------------- 1. DISTINCT HERO SECTION (CINEMATIC ENVIRONMENT & ★★★★★ THREE.JS HERO CANVAS) ---------------- */}
-      <section className="relative bg-slate-950 text-white pt-16 sm:pt-24 lg:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* ---------------- 1. DISTINCT HERO SECTION (EDITORIAL & IMMERSIVE ENVIRONMENT) ---------------- */}
+      <section className="relative bg-slate-950 text-white pt-16 sm:pt-24 lg:pt-28 pb-28 sm:pb-36 px-4 sm:px-6 lg:px-8 overflow-hidden">
         
-        {/* Hero Three.js AI Network Canvas (★★★★★ Strongest showcase) */}
+        {/* Hero Three.js AI Network Canvas (★★★★★ Hero intensity) */}
         <AiSignalNetworkCanvas intensity="hero" />
 
-        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           
           {/* Left Hero Text Column */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.14]">
               Never lose a lead. <br />
               <span className="text-emerald-400">Never miss a follow-up.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
               Follow-up management for sales professionals who close high-value deals.
             </p>
 
@@ -99,7 +99,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center cursor-pointer transition-all"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
               >
                 Get Started
               </button>
@@ -107,7 +107,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('login')}
-                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-3 cursor-pointer transition-colors"
+                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-4 cursor-pointer transition-colors"
               >
                 Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
               </button>
@@ -115,9 +115,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           </div>
 
-          {/* Right Mobile Dashboard Mockup */}
-          <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full">
-            <div className="bg-slate-900/95 backdrop-blur-2xl text-white border-8 border-slate-800/90 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left">
+          {/* Right Visual Anchor Mobile Dashboard Mockup (Overlapping transition down) */}
+          <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full -mb-16 sm:-mb-24 relative z-20">
+            <div className="bg-slate-900/95 backdrop-blur-2xl text-white border-8 border-slate-800/90 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left hover:-translate-y-1 transition-transform duration-300">
               
               <div className="w-20 h-3.5 bg-slate-800 rounded-full mx-auto mb-2" />
 
@@ -208,27 +208,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
         </div>
 
-        {/* Elegant Soft Atmospheric Gradient Fade to Section 2 below */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-b from-transparent via-slate-950/40 to-white pointer-events-none z-10" />
+        {/* Soft gradient transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent via-slate-950/30 to-white pointer-events-none z-10" />
       </section>
 
-      {/* ---------------- 2. PROBLEM SECTION (SUBTLE VISUAL IDENTITY & ★★☆☆☆ PARTICLES) ---------------- */}
-      <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8 overflow-hidden">
+      {/* ---------------- 2. PROBLEM SECTION (TYPOGRAPHY-FIRST & COMPACT) ---------------- */}
+      <section className="relative bg-white pt-32 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8 overflow-hidden">
         
-        {/* Subtle Section Particle Canvas (★★☆☆☆) */}
+        {/* Subtle Canvas */}
         <AiSignalNetworkCanvas intensity="subtle" />
 
         <div className="relative z-10 space-y-8">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
             Still managing leads with WhatsApp, notebooks or spreadsheets?
           </h2>
 
-          <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-slate-50/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-slate-50/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm hover:border-slate-300 transition-colors">
             <p>
               As your business grows, it's easy to lose track of conversations and forget important follow-ups.
             </p>
-            <p className="font-bold text-emerald-700 text-xl">
-              Every missed follow-up is a missed opportunity.
+            <p className="font-bold text-emerald-600 text-xl tracking-tight">
+              Every missed follow-up is a <span className="underline decoration-emerald-500/40 underline-offset-4">missed opportunity</span>.
             </p>
             <p className="text-slate-600 text-base">
               Ventepulse keeps every lead organized and helps you know exactly who to contact today.
@@ -237,7 +237,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 3. SOLUTION SECTION / FEATURES (SLATE ATMOSPHERE & ★★☆☆☆ PARTICLES) ---------------- */}
+      {/* ---------------- 3. SOLUTION SECTION / FEATURES (NEUTRAL SURFACE & COMPACT CARDS) ---------------- */}
       <section className="relative bg-slate-50/80 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="subtle" />
@@ -245,7 +245,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         <div className="relative z-10 max-w-7xl mx-auto space-y-14">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Everything you need to stay on top of every lead
+              Everything you need to stay on top of <span className="text-emerald-600">every lead</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-600">
               A simple, powerful workspace built for modern sales professionals.
@@ -254,7 +254,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <Users className="w-6 h-6" />
               </div>
@@ -264,7 +264,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <Calendar className="w-6 h-6" />
               </div>
@@ -274,7 +274,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <MessageSquare className="w-6 h-6" />
               </div>
@@ -284,7 +284,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <UploadCloud className="w-6 h-6" />
               </div>
@@ -294,7 +294,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1 hover:border-emerald-500/30 transition-all">
+            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1 hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <BarChart3 className="w-6 h-6" />
               </div>
@@ -308,7 +308,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 4. HOW IT WORKS SECTION (MODERATE INTENSITY ★★★☆☆) ---------------- */}
+      {/* ---------------- 4. HOW IT WORKS SECTION (CONNECTED PROCESS FLOW) ---------------- */}
       <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="moderate" />
@@ -316,76 +316,77 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         <div className="relative z-10 max-w-7xl mx-auto space-y-14">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Get started in 6 simple steps
+              Get started in <span className="text-emerald-600">6 simple steps</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-600">
               Streamlined workflow designed for maximum daily conversion.
             </p>
           </div>
 
+          {/* Connected Process Steps Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 1
               </div>
               <h4 className="text-base font-bold text-slate-900">Sign Up</h4>
               <p className="text-xs sm:text-sm text-slate-600">Create your account in under 30 seconds.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 2
               </div>
               <h4 className="text-base font-bold text-slate-900">Import Leads</h4>
               <p className="text-xs sm:text-sm text-slate-600">Upload Excel/CSV contacts or add leads manually.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 3
               </div>
               <h4 className="text-base font-bold text-slate-900">Check Daily Tasks</h4>
               <p className="text-xs sm:text-sm text-slate-600">Review who needs a follow-up today.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 4
               </div>
               <h4 className="text-base font-bold text-slate-900">Send Message</h4>
               <p className="text-xs sm:text-sm text-slate-600">Tap to launch pre-drafted WhatsApp messages.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 5
               </div>
               <h4 className="text-base font-bold text-slate-900">Record Progress</h4>
               <p className="text-xs sm:text-sm text-slate-600">Log interaction notes and update lead stage.</p>
             </div>
 
-            <div className="p-6 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 rounded-2xl space-y-3 text-left">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+            <div className="p-6 bg-emerald-950/90 backdrop-blur-md text-white border border-emerald-500/30 rounded-2xl space-y-3.5 text-left shadow-md shadow-emerald-950/20">
+              <div className="w-9 h-9 rounded-xl bg-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-400/20">
                 6
               </div>
-              <h4 className="text-base font-bold text-emerald-900">Close Deals</h4>
-              <p className="text-xs sm:text-sm text-emerald-700 font-medium">Consistently convert leads into closed deals.</p>
+              <h4 className="text-base font-bold text-white">Close Deals</h4>
+              <p className="text-xs sm:text-sm text-emerald-200 font-medium">Consistently convert leads into closed deals.</p>
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* ---------------- 5. WHO IT'S FOR SECTION (CLEAN SUBTLE PARTICLES ★★☆☆☆) ---------------- */}
-      <section className="relative bg-slate-50/60 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
+      {/* ---------------- 5. WHO IT'S FOR SECTION (VISUAL INDUSTRY CARDS) ---------------- */}
+      <section className="relative bg-slate-50/70 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="subtle" />
 
         <div className="relative z-10 max-w-7xl mx-auto space-y-14">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Built for high-ticket industries
+              Built for <span className="text-emerald-600">high-ticket industries</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-600">
               Tailored follow-up solutions across leading sales verticals.
@@ -394,38 +395,50 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <Building2 className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <Building2 className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">Real Estate Agents</h3>
               <p className="text-xs sm:text-sm text-slate-600">Manage property viewings and high-value buyers effortlessly.</p>
             </div>
 
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <Car className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <Car className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">Car Dealerships</h3>
               <p className="text-xs sm:text-sm text-slate-600">Track test drives, trade-ins, and automotive financing inquiries.</p>
             </div>
 
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <TrendingUp className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">High-Ticket Closers</h3>
               <p className="text-xs sm:text-sm text-slate-600">Never let high-value consultative prospects go cold.</p>
             </div>
 
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <ShieldCheck className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">Insurance Agents</h3>
               <p className="text-xs sm:text-sm text-slate-600">Maintain policy renewal reminders and quote follow-ups.</p>
             </div>
 
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <Briefcase className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <Briefcase className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">Financial Advisors</h3>
               <p className="text-xs sm:text-sm text-slate-600">Stay top-of-mind with wealth management clients.</p>
             </div>
 
-            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-              <Users className="w-7 h-7 text-emerald-600" />
+            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+                <Users className="w-5 h-5" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900">Sales Teams</h3>
               <p className="text-xs sm:text-sm text-slate-600">Empower sales reps to close deals consistently every day.</p>
             </div>
@@ -434,16 +447,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 6. CALL TO ACTION SECTION (HIGH CONVERSION ★★★★☆ THREE.JS CANVAS) ---------------- */}
+      {/* ---------------- 6. CALL TO ACTION SECTION (WARM & INVITING DEEP GRADIENT CARD) ---------------- */}
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <div className="relative bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl overflow-hidden border border-emerald-500/30">
           
-          {/* CTA Particle Network Canvas (★★★★☆) */}
+          {/* CTA Three.js AI Signal Network Canvas */}
           <AiSignalNetworkCanvas intensity="cta" />
 
           <div className="relative z-10 space-y-6">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Every missed follow-up is a missed opportunity.
+              Every missed follow-up is a <span className="text-emerald-400">missed opportunity</span>.
             </h2>
 
             <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto">
@@ -454,7 +467,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center cursor-pointer transition-all"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
               >
                 Get Started
               </button>
@@ -462,7 +475,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('login')}
-                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-3 cursor-pointer transition-colors"
+                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-4 cursor-pointer transition-colors"
               >
                 Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
               </button>
@@ -482,8 +495,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             {/* About Column */}
             <div className="col-span-2 space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center">
-                  <Zap className="w-4 h-4 fill-current" />
+                <div className="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center">
+                  <Zap className="w-4 h-4 fill-current text-slate-950" />
                 </div>
                 <span className="text-lg font-bold text-white">
                   Ventepulse
