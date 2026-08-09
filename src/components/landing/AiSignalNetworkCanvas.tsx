@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-export const AiSignalNetworkCanvas: React.FC = () => {
+export interface AiSignalNetworkCanvasProps {
+  intensity?: 'hero' | 'moderate' | 'subtle' | 'cta';
+}
+
+export const AiSignalNetworkCanvas: React.FC<AiSignalNetworkCanvasProps> = ({
+  intensity = 'hero',
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [webGlSupported, setWebGlSupported] = useState(true);
@@ -57,45 +63,82 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       renderer.setSize(container.clientWidth, container.clientHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
-      // 3. Central AI Core Setup
+      // Calibrate intensity scale
+      const isMobile = window.innerWidth < 768;
+      
+      let baseNodeCount = 85;
+      let baseMaxConn = 110;
+      let baseSignalCount = 28;
+      let lineOpacity = 0.35;
+      let nodeOpacity = 0.8;
+      let renderCore = true;
+
+      if (intensity === 'moderate') {
+        baseNodeCount = 45;
+        baseMaxConn = 55;
+        baseSignalCount = 14;
+        lineOpacity = 0.2;
+        nodeOpacity = 0.5;
+        renderCore = true;
+      } else if (intensity === 'subtle') {
+        baseNodeCount = 25;
+        baseMaxConn = 25;
+        baseSignalCount = 6;
+        lineOpacity = 0.1;
+        nodeOpacity = 0.3;
+        renderCore = false;
+      } else if (intensity === 'cta') {
+        baseNodeCount = 65;
+        baseMaxConn = 80;
+        baseSignalCount = 20;
+        lineOpacity = 0.3;
+        nodeOpacity = 0.75;
+        renderCore = true;
+      }
+
+      const nodeCount = isMobile ? Math.max(12, Math.floor(baseNodeCount * 0.4)) : baseNodeCount;
+      const maxConnections = isMobile ? Math.max(15, Math.floor(baseMaxConn * 0.4)) : baseMaxConn;
+      const signalCount = isMobile ? Math.max(4, Math.floor(baseSignalCount * 0.4)) : baseSignalCount;
+
+      // 3. Central AI Core Setup (Rendered on Hero, Moderate & CTA)
       const aiCoreGroup = new THREE.Group();
 
-      const coreGeo = new THREE.IcosahedronGeometry(2.8, 2);
-      const coreMat = new THREE.MeshBasicMaterial({
-        color: 0x10b981, // Emerald 500
-        wireframe: true,
-        transparent: true,
-        opacity: 0.25,
-      });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      aiCoreGroup.add(coreMesh);
+      if (renderCore) {
+        const coreScale = intensity === 'hero' ? 1.0 : 0.65;
+        const coreGeo = new THREE.IcosahedronGeometry(2.8 * coreScale, 2);
+        const coreMat = new THREE.MeshBasicMaterial({
+          color: 0x10b981, // Emerald 500
+          wireframe: true,
+          transparent: true,
+          opacity: intensity === 'hero' ? 0.25 : 0.15,
+        });
+        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+        aiCoreGroup.add(coreMesh);
 
-      const innerCoreGeo = new THREE.IcosahedronGeometry(1.6, 1);
-      const innerCoreMat = new THREE.MeshBasicMaterial({
-        color: 0x059669, // Emerald 600
-        wireframe: true,
-        transparent: true,
-        opacity: 0.45,
-      });
-      const innerCoreMesh = new THREE.Mesh(innerCoreGeo, innerCoreMat);
-      aiCoreGroup.add(innerCoreMesh);
+        const innerCoreGeo = new THREE.IcosahedronGeometry(1.6 * coreScale, 1);
+        const innerCoreMat = new THREE.MeshBasicMaterial({
+          color: 0x059669, // Emerald 600
+          wireframe: true,
+          transparent: true,
+          opacity: intensity === 'hero' ? 0.45 : 0.25,
+        });
+        const innerCoreMesh = new THREE.Mesh(innerCoreGeo, innerCoreMat);
+        aiCoreGroup.add(innerCoreMesh);
 
-      const centerPointGeo = new THREE.SphereGeometry(0.6, 16, 16);
-      const centerPointMat = new THREE.MeshBasicMaterial({
-        color: 0x34d399,
-        transparent: true,
-        opacity: 0.8,
-      });
-      const centerPoint = new THREE.Mesh(centerPointGeo, centerPointMat);
-      aiCoreGroup.add(centerPoint);
+        const centerPointGeo = new THREE.SphereGeometry(0.6 * coreScale, 16, 16);
+        const centerPointMat = new THREE.MeshBasicMaterial({
+          color: 0x34d399,
+          transparent: true,
+          opacity: intensity === 'hero' ? 0.8 : 0.5,
+        });
+        const centerPoint = new THREE.Mesh(centerPointGeo, centerPointMat);
+        aiCoreGroup.add(centerPoint);
 
-      aiCoreGroup.position.set(6, 1, 0);
-      scene.add(aiCoreGroup);
+        aiCoreGroup.position.set(intensity === 'hero' ? 6 : 0, 1, 0);
+        scene.add(aiCoreGroup);
+      }
 
       // 4. Lead Nodes Setup
-      const isMobile = window.innerWidth < 768;
-      const nodeCount = isMobile ? 35 : 85;
-
       const nodes: {
         position: THREE.Vector3;
         velocity: THREE.Vector3;
@@ -110,13 +153,13 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       const leadNodeMat = new THREE.MeshBasicMaterial({
         color: 0x10b981,
         transparent: true,
-        opacity: 0.7,
+        opacity: nodeOpacity,
       });
 
       const conversionNodeMat = new THREE.MeshBasicMaterial({
         color: 0x34d399,
         transparent: true,
-        opacity: 0.9,
+        opacity: Math.min(1.0, nodeOpacity + 0.15),
       });
 
       for (let i = 0; i < nodeCount; i++) {
@@ -140,9 +183,9 @@ export const AiSignalNetworkCanvas: React.FC = () => {
         nodes.push({
           position: mesh.position,
           velocity: new THREE.Vector3(
-            (Math.random() - 0.5) * 0.006,
-            (Math.random() - 0.5) * 0.006,
-            (Math.random() - 0.5) * 0.003
+            (Math.random() - 0.5) * 0.005,
+            (Math.random() - 0.5) * 0.005,
+            (Math.random() - 0.5) * 0.002
           ),
           mesh,
           isConversionNode,
@@ -150,7 +193,6 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       }
 
       // 5. Connection Lines
-      const maxConnections = isMobile ? 40 : 110;
       const linePositions = new Float32Array(maxConnections * 2 * 3);
       const lineColors = new Float32Array(maxConnections * 2 * 3);
 
@@ -167,7 +209,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       const lineMaterial = new THREE.LineBasicMaterial({
         vertexColors: true,
         transparent: true,
-        opacity: 0.25,
+        opacity: lineOpacity,
         blending: THREE.AdditiveBlending,
       });
 
@@ -175,7 +217,6 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       scene.add(linesMesh);
 
       // 6. Traveling Signals
-      const signalCount = isMobile ? 12 : 28;
       const signals: {
         mesh: THREE.Mesh;
         startNodeIdx: number;
@@ -188,7 +229,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
       const signalMat = new THREE.MeshBasicMaterial({
         color: 0x6ee7b7,
         transparent: true,
-        opacity: 0.95,
+        opacity: Math.min(1.0, nodeOpacity + 0.2),
       });
 
       for (let s = 0; s < signalCount; s++) {
@@ -206,7 +247,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
           startNodeIdx: startIdx,
           endNodeIdx: endIdx,
           progress: Math.random(),
-          speed: 0.004 + Math.random() * 0.008,
+          speed: 0.003 + Math.random() * 0.006,
         });
       }
 
@@ -236,7 +277,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
 
       window.addEventListener('resize', handleResize);
 
-      // 9. Intersection Observer
+      // 9. Intersection Observer for Pause on Scroll
       let isVisible = true;
       observer = new IntersectionObserver(
         (entries) => {
@@ -244,7 +285,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
             isVisible = entry.isIntersecting;
           });
         },
-        { threshold: 0.1 }
+        { threshold: 0.05 }
       );
       observer.observe(container);
 
@@ -265,10 +306,12 @@ export const AiSignalNetworkCanvas: React.FC = () => {
           camera.position.y = -currentMouseY;
           camera.lookAt(0, 0, 0);
 
-          aiCoreGroup.rotation.y = elapsedTime * 0.12;
-          aiCoreGroup.rotation.x = Math.sin(elapsedTime * 0.15) * 0.08;
-          const scalePulse = 1 + Math.sin(elapsedTime * 1.8) * 0.04;
-          aiCoreGroup.scale.set(scalePulse, scalePulse, scalePulse);
+          if (renderCore) {
+            aiCoreGroup.rotation.y = elapsedTime * 0.12;
+            aiCoreGroup.rotation.x = Math.sin(elapsedTime * 0.15) * 0.08;
+            const scalePulse = 1 + Math.sin(elapsedTime * 1.8) * 0.04;
+            aiCoreGroup.scale.set(scalePulse, scalePulse, scalePulse);
+          }
 
           nodes.forEach((n) => {
             n.position.add(n.velocity);
@@ -299,7 +342,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
                 linePositions[baseIdx + 4] = nodes[j].position.y;
                 linePositions[baseIdx + 5] = nodes[j].position.z;
 
-                const alpha = (1 - dist / 7.5) * 0.45;
+                const alpha = (1 - dist / 7.5) * lineOpacity;
                 lineColors[baseIdx] = emeraldR * alpha;
                 lineColors[baseIdx + 1] = emeraldG * alpha;
                 lineColors[baseIdx + 2] = emeraldB * alpha;
@@ -348,26 +391,25 @@ export const AiSignalNetworkCanvas: React.FC = () => {
         window.removeEventListener('resize', handleResize);
         if (observer) observer.disconnect();
 
-        coreGeo.dispose();
-        coreMat.dispose();
-        innerCoreGeo.dispose();
-        innerCoreMat.dispose();
-        centerPointGeo.dispose();
-        centerPointMat.dispose();
+        lineGeometry.dispose();
+        lineMaterial.dispose();
         leadNodeGeo.dispose();
         leadNodeMat.dispose();
         conversionNodeMat.dispose();
-        lineGeometry.dispose();
-        lineMaterial.dispose();
         signalGeo.dispose();
         signalMat.dispose();
+
+        if (renderCore) {
+          aiCoreGroup.clear();
+        }
+
         if (renderer) renderer.dispose();
       };
     } catch (err) {
-      console.error('Three.js setup encountered an error:', err);
+      console.error('Three.js setup error:', err);
       setWebGlSupported(false);
     }
-  }, []);
+  }, [intensity]);
 
   // WebGL Fallback Ambient Background
   if (!webGlSupported) {
@@ -379,6 +421,19 @@ export const AiSignalNetworkCanvas: React.FC = () => {
     );
   }
 
+  const getCanvasOpacity = () => {
+    switch (intensity) {
+      case 'hero':
+        return 'opacity-90';
+      case 'moderate':
+        return 'opacity-60';
+      case 'subtle':
+        return 'opacity-35';
+      case 'cta':
+        return 'opacity-85';
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -386,7 +441,7 @@ export const AiSignalNetworkCanvas: React.FC = () => {
     >
       <canvas
         ref={canvasRef}
-        className="w-full h-full block pointer-events-none opacity-85 transition-opacity duration-1000"
+        className={`w-full h-full block pointer-events-none transition-opacity duration-1000 ${getCanvasOpacity()}`}
       />
     </div>
   );

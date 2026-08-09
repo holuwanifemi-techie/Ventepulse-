@@ -75,28 +75,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </header>
 
-      {/* ---------------- HERO SECTION WITH THREE.JS AI CANVAS ---------------- */}
-      <section className="relative bg-slate-50/90 border-b border-slate-200/70 py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* ---------------- 1. DISTINCT HERO SECTION (CINEMATIC ENVIRONMENT & ★★★★★ THREE.JS HERO CANVAS) ---------------- */}
+      <section className="relative bg-slate-950 text-white pt-16 sm:pt-24 lg:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         
-        {/* Three.js AI Intelligence Network Background Canvas */}
-        <AiSignalNetworkCanvas />
+        {/* Hero Three.js AI Network Canvas (★★★★★ Strongest showcase) */}
+        <AiSignalNetworkCanvas intensity="hero" />
 
         <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Hero Text Column */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
             
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>AI-Powered Follow-Up Intelligence</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
               Never lose a lead. <br />
-              <span className="text-emerald-600">Never miss a follow-up.</span>
+              <span className="text-emerald-400">Never miss a follow-up.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-600 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            <p className="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
               Follow-up management for sales professionals who close high-value deals.
             </p>
 
@@ -104,7 +99,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center cursor-pointer transition-all"
               >
                 Get Started
               </button>
@@ -112,9 +107,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('login')}
-                className="text-sm font-semibold text-slate-600 hover:text-slate-900 py-2.5 px-3 cursor-pointer"
+                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-3 cursor-pointer transition-colors"
               >
-                Already have an account? <span className="text-emerald-600 font-bold underline underline-offset-4">Login</span>
+                Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
               </button>
             </div>
 
@@ -122,7 +117,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           {/* Right Mobile Dashboard Mockup */}
           <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full">
-            <div className="bg-slate-900/95 backdrop-blur-xl text-white border-8 border-slate-800 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left">
+            <div className="bg-slate-900/95 backdrop-blur-2xl text-white border-8 border-slate-800/90 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left">
               
               <div className="w-20 h-3.5 bg-slate-800 rounded-full mx-auto mb-2" />
 
@@ -212,240 +207,266 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
           </div>
 
         </div>
+
+        {/* Elegant Soft Atmospheric Gradient Fade to Section 2 below */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-b from-transparent via-slate-950/40 to-white pointer-events-none z-10" />
       </section>
 
-      {/* ---------------- PROBLEM SECTION ---------------- */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Still managing leads with WhatsApp, notebooks or spreadsheets?
-        </h2>
-
-        <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-slate-50 p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm">
-          <p>
-            As your business grows, it's easy to lose track of conversations and forget important follow-ups.
-          </p>
-          <p className="font-bold text-emerald-700 text-xl">
-            Every missed follow-up is a missed opportunity.
-          </p>
-          <p className="text-slate-600 text-base">
-            Ventepulse keeps every lead organized and helps you know exactly who to contact today.
-          </p>
-        </div>
-      </section>
-
-      {/* ---------------- SOLUTION SECTION / FEATURES ---------------- */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-14 border-t border-slate-100">
+      {/* ---------------- 2. PROBLEM SECTION (SUBTLE VISUAL IDENTITY & ★★☆☆☆ PARTICLES) ---------------- */}
+      <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8 overflow-hidden">
         
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Everything you need to stay on top of every lead
+        {/* Subtle Section Particle Canvas (★★☆☆☆) */}
+        <AiSignalNetworkCanvas intensity="subtle" />
+
+        <div className="relative z-10 space-y-8">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Still managing leads with WhatsApp, notebooks or spreadsheets?
           </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            A simple, powerful workspace built for modern sales professionals.
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          <div className="p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <Users className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Lead Management</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Keep every lead organized from first contact to closed deal with custom notes and stage tracking.
+          <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-slate-50/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm">
+            <p>
+              As your business grows, it's easy to lose track of conversations and forget important follow-ups.
+            </p>
+            <p className="font-bold text-emerald-700 text-xl">
+              Every missed follow-up is a missed opportunity.
+            </p>
+            <p className="text-slate-600 text-base">
+              Ventepulse keeps every lead organized and helps you know exactly who to contact today.
             </p>
           </div>
-
-          <div className="p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <Calendar className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Follow-up Scheduling</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Schedule follow-up reminders so you never miss the right time to reconnect with prospects.
-            </p>
-          </div>
-
-          <div className="p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <MessageSquare className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">WhatsApp Ready</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Generate AI-drafted messages and launch WhatsApp with one tap to continue conversations smoothly.
-            </p>
-          </div>
-
-          <div className="p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <UploadCloud className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Existing Data Import</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Import your existing lead databases from Excel or CSV files in seconds without data loss.
-            </p>
-          </div>
-
-          <div className="p-8 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
-              <BarChart3 className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Analytics Dashboard</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Track active follow-ups, monitor pipeline progress and evaluate team sales performance easily.
-            </p>
-          </div>
-
         </div>
       </section>
 
-      {/* ---------------- HOW IT WORKS SECTION ---------------- */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-14 border-t border-slate-100">
+      {/* ---------------- 3. SOLUTION SECTION / FEATURES (SLATE ATMOSPHERE & ★★☆☆☆ PARTICLES) ---------------- */}
+      <section className="relative bg-slate-50/80 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
         
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Get started in 6 simple steps
-          </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            Streamlined workflow designed for maximum daily conversion.
-          </p>
-        </div>
+        <AiSignalNetworkCanvas intensity="subtle" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              1
-            </div>
-            <h4 className="text-base font-bold text-slate-900">Sign Up</h4>
-            <p className="text-xs sm:text-sm text-slate-600">Create your account in under 30 seconds.</p>
+        <div className="relative z-10 max-w-7xl mx-auto space-y-14">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Everything you need to stay on top of every lead
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600">
+              A simple, powerful workspace built for modern sales professionals.
+            </p>
           </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              2
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">Lead Management</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Keep every lead organized from first contact to closed deal with custom notes and stage tracking.
+              </p>
             </div>
-            <h4 className="text-base font-bold text-slate-900">Import Leads</h4>
-            <p className="text-xs sm:text-sm text-slate-600">Upload Excel/CSV contacts or add leads manually.</p>
-          </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              3
+            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <Calendar className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">Follow-up Scheduling</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Schedule follow-up reminders so you never miss the right time to reconnect with prospects.
+              </p>
             </div>
-            <h4 className="text-base font-bold text-slate-900">Check Daily Tasks</h4>
-            <p className="text-xs sm:text-sm text-slate-600">Review who needs a follow-up today.</p>
-          </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              4
+            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <MessageSquare className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">WhatsApp Ready</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Generate AI-drafted messages and launch WhatsApp with one tap to continue conversations smoothly.
+              </p>
             </div>
-            <h4 className="text-base font-bold text-slate-900">Send Message</h4>
-            <p className="text-xs sm:text-sm text-slate-600">Tap to launch pre-drafted WhatsApp messages.</p>
-          </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              5
+            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <UploadCloud className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">Existing Data Import</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Import your existing lead databases from Excel or CSV files in seconds without data loss.
+              </p>
             </div>
-            <h4 className="text-base font-bold text-slate-900">Record Progress</h4>
-            <p className="text-xs sm:text-sm text-slate-600">Log interaction notes and update lead stage.</p>
-          </div>
 
-          <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-3 text-left">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-              6
+            <div className="p-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1 hover:border-emerald-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <BarChart3 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">Analytics Dashboard</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Track active follow-ups, monitor pipeline progress and evaluate team sales performance easily.
+              </p>
             </div>
-            <h4 className="text-base font-bold text-emerald-900">Close Deals</h4>
-            <p className="text-xs sm:text-sm text-emerald-700 font-medium">Consistently convert leads into closed deals.</p>
-          </div>
 
+          </div>
         </div>
       </section>
 
-      {/* ---------------- WHO IT'S FOR SECTION ---------------- */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-14 border-t border-slate-100">
+      {/* ---------------- 4. HOW IT WORKS SECTION (MODERATE INTENSITY ★★★☆☆) ---------------- */}
+      <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
         
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Built for high-ticket industries
-          </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            Tailored follow-up solutions across leading sales verticals.
-          </p>
-        </div>
+        <AiSignalNetworkCanvas intensity="moderate" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <Building2 className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Real Estate Agents</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Manage property viewings and high-value buyers effortlessly.</p>
+        <div className="relative z-10 max-w-7xl mx-auto space-y-14">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Get started in 6 simple steps
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600">
+              Streamlined workflow designed for maximum daily conversion.
+            </p>
           </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <Car className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Car Dealerships</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Track test drives, trade-ins, and automotive financing inquiries.</p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                1
+              </div>
+              <h4 className="text-base font-bold text-slate-900">Sign Up</h4>
+              <p className="text-xs sm:text-sm text-slate-600">Create your account in under 30 seconds.</p>
+            </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <TrendingUp className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">High-Ticket Closers</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Never let high-value consultative prospects go cold.</p>
-          </div>
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                2
+              </div>
+              <h4 className="text-base font-bold text-slate-900">Import Leads</h4>
+              <p className="text-xs sm:text-sm text-slate-600">Upload Excel/CSV contacts or add leads manually.</p>
+            </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <ShieldCheck className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Insurance Agents</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Maintain policy renewal reminders and quote follow-ups.</p>
-          </div>
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                3
+              </div>
+              <h4 className="text-base font-bold text-slate-900">Check Daily Tasks</h4>
+              <p className="text-xs sm:text-sm text-slate-600">Review who needs a follow-up today.</p>
+            </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <Briefcase className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Financial Advisors</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Stay top-of-mind with wealth management clients.</p>
-          </div>
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                4
+              </div>
+              <h4 className="text-base font-bold text-slate-900">Send Message</h4>
+              <p className="text-xs sm:text-sm text-slate-600">Tap to launch pre-drafted WhatsApp messages.</p>
+            </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
-            <Users className="w-7 h-7 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Sales Teams</h3>
-            <p className="text-xs sm:text-sm text-slate-600">Empower sales reps to close deals consistently every day.</p>
-          </div>
+            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                5
+              </div>
+              <h4 className="text-base font-bold text-slate-900">Record Progress</h4>
+              <p className="text-xs sm:text-sm text-slate-600">Log interaction notes and update lead stage.</p>
+            </div>
 
+            <div className="p-6 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 rounded-2xl space-y-3 text-left">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
+                6
+              </div>
+              <h4 className="text-base font-bold text-emerald-900">Close Deals</h4>
+              <p className="text-xs sm:text-sm text-emerald-700 font-medium">Consistently convert leads into closed deals.</p>
+            </div>
+
+          </div>
         </div>
       </section>
 
-      {/* ---------------- CALL TO ACTION SECTION ---------------- */}
+      {/* ---------------- 5. WHO IT'S FOR SECTION (CLEAN SUBTLE PARTICLES ★★☆☆☆) ---------------- */}
+      <section className="relative bg-slate-50/60 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
+        
+        <AiSignalNetworkCanvas intensity="subtle" />
+
+        <div className="relative z-10 max-w-7xl mx-auto space-y-14">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Built for high-ticket industries
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600">
+              Tailored follow-up solutions across leading sales verticals.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <Building2 className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">Real Estate Agents</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Manage property viewings and high-value buyers effortlessly.</p>
+            </div>
+
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <Car className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">Car Dealerships</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Track test drives, trade-ins, and automotive financing inquiries.</p>
+            </div>
+
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <TrendingUp className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">High-Ticket Closers</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Never let high-value consultative prospects go cold.</p>
+            </div>
+
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <ShieldCheck className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">Insurance Agents</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Maintain policy renewal reminders and quote follow-ups.</p>
+            </div>
+
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <Briefcase className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">Financial Advisors</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Stay top-of-mind with wealth management clients.</p>
+            </div>
+
+            <div className="p-6 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm space-y-3 text-left">
+              <Users className="w-7 h-7 text-emerald-600" />
+              <h3 className="text-lg font-bold text-slate-900">Sales Teams</h3>
+              <p className="text-xs sm:text-sm text-slate-600">Empower sales reps to close deals consistently every day.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- 6. CALL TO ACTION SECTION (HIGH CONVERSION ★★★★☆ THREE.JS CANVAS) ---------------- */}
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-sm">
+        <div className="relative bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl overflow-hidden border border-emerald-500/30">
           
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Every missed follow-up is a missed opportunity.
-          </h2>
+          {/* CTA Particle Network Canvas (★★★★☆) */}
+          <AiSignalNetworkCanvas intensity="cta" />
 
-          <p className="text-base sm:text-lg text-slate-700 max-w-xl mx-auto">
-            Start organizing your leads today and stay on top of every sales conversation.
-          </p>
+          <div className="relative z-10 space-y-6">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Every missed follow-up is a missed opportunity.
+            </h2>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <button
-              type="button"
-              onClick={() => onNavigateToAuth('register')}
-              className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center cursor-pointer"
-            >
-              Get Started
-            </button>
+            <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto">
+              Start organizing your leads today and stay on top of every sales conversation.
+            </p>
 
-            <button
-              type="button"
-              onClick={() => onNavigateToAuth('login')}
-              className="text-sm font-semibold text-slate-700 hover:text-slate-900 py-2.5 px-3 cursor-pointer"
-            >
-              Already have an account? <span className="text-emerald-700 font-bold underline underline-offset-4">Login</span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                type="button"
+                onClick={() => onNavigateToAuth('register')}
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center cursor-pointer transition-all"
+              >
+                Get Started
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onNavigateToAuth('login')}
+                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-3 cursor-pointer transition-colors"
+              >
+                Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
+              </button>
+            </div>
           </div>
 
         </div>
