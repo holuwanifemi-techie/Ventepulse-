@@ -75,7 +75,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </header>
 
-      {/* ---------------- 1. DISTINCT HERO SECTION (EDITORIAL & IMMERSIVE ENVIRONMENT) ---------------- */}
+      {/* ---------------- 1. DISTINCT HERO SECTION (CLEAN SINGLE ENVIRONMENT) ---------------- */}
       <section className="relative bg-slate-950 text-white pt-16 sm:pt-24 lg:pt-28 pb-28 sm:pb-36 px-4 sm:px-6 lg:px-8 overflow-hidden">
         
         {/* Hero Three.js AI Network Canvas (★★★★★ Hero intensity) */}
@@ -115,9 +115,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           </div>
 
-          {/* Right Visual Anchor Mobile Dashboard Mockup (Overlapping transition down) */}
-          <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full -mb-16 sm:-mb-24 relative z-20">
-            <div className="bg-slate-900/95 backdrop-blur-2xl text-white border-8 border-slate-800/90 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left hover:-translate-y-1 transition-transform duration-300">
+          {/* Right Visual Anchor Mobile Dashboard Mockup (Layered Overlap) */}
+          <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full -mb-20 sm:-mb-28 relative z-20">
+            <div className="bg-slate-900 text-white border-8 border-slate-800 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left hover:-translate-y-1 transition-transform duration-300">
               
               <div className="w-20 h-3.5 bg-slate-800 rounded-full mx-auto mb-2" />
 
@@ -208,14 +208,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
         </div>
 
-        {/* Soft gradient transition */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent via-slate-950/30 to-white pointer-events-none z-10" />
       </section>
 
-      {/* ---------------- 2. PROBLEM SECTION (TYPOGRAPHY-FIRST & COMPACT) ---------------- */}
-      <section className="relative bg-white pt-32 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8 overflow-hidden">
+      {/* ---------------- 2. PROBLEM SECTION (WHITE BACKGROUND, TYPOGRAPHY-FIRST) ---------------- */}
+      <section className="relative bg-white pt-36 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-8 overflow-hidden">
         
-        {/* Subtle Canvas */}
+        {/* Subtle Three.js Canvas */}
         <AiSignalNetworkCanvas intensity="subtle" />
 
         <div className="relative z-10 space-y-8">
@@ -223,7 +221,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             Still managing leads with WhatsApp, notebooks or spreadsheets?
           </h2>
 
-          <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-slate-50/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm hover:border-slate-300 transition-colors">
+          <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed text-left sm:text-center bg-[#F7F8FA] p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-sm">
             <p>
               As your business grows, it's easy to lose track of conversations and forget important follow-ups.
             </p>
@@ -237,8 +235,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 3. SOLUTION SECTION / FEATURES (NEUTRAL SURFACE & COMPACT CARDS) ---------------- */}
-      <section className="relative bg-slate-50/80 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
+      {/* ---------------- 3. FEATURED SECTION #1: SOLUTIONS & FEATURES (SUBTLE NEUTRAL SURFACE #F7F8FA) ---------------- */}
+      <section className="relative bg-[#F7F8FA] py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-y border-slate-100/90 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="subtle" />
 
@@ -254,7 +252,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <Users className="w-6 h-6" />
               </div>
@@ -264,7 +262,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <Calendar className="w-6 h-6" />
               </div>
@@ -274,7 +272,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <MessageSquare className="w-6 h-6" />
               </div>
@@ -284,7 +282,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <UploadCloud className="w-6 h-6" />
               </div>
@@ -294,7 +292,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               </p>
             </div>
 
-            <div className="p-8 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1 hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-4 text-left md:col-span-2 lg:col-span-1 hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <BarChart3 className="w-6 h-6" />
               </div>
@@ -308,8 +306,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 4. HOW IT WORKS SECTION (CONNECTED PROCESS FLOW) ---------------- */}
-      <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
+      {/* ---------------- 4. HOW IT WORKS SECTION (WHITE BACKGROUND, CONNECTED PROCESS FLOW) ---------------- */}
+      <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-100 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="moderate" />
 
@@ -326,7 +324,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
           {/* Connected Process Steps Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
               <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 1
               </div>
@@ -334,7 +332,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Create your account in under 30 seconds.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
               <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 2
               </div>
@@ -342,7 +340,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Upload Excel/CSV contacts or add leads manually.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
               <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 3
               </div>
@@ -350,7 +348,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Review who needs a follow-up today.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
               <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 4
               </div>
@@ -358,7 +356,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Tap to launch pre-drafted WhatsApp messages.</p>
             </div>
 
-            <div className="p-6 bg-slate-50/90 backdrop-blur-md border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
               <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                 5
               </div>
@@ -366,7 +364,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Log interaction notes and update lead stage.</p>
             </div>
 
-            <div className="p-6 bg-emerald-950/90 backdrop-blur-md text-white border border-emerald-500/30 rounded-2xl space-y-3.5 text-left shadow-md shadow-emerald-950/20">
+            <div className="p-6 bg-emerald-950 text-white border border-emerald-500/30 rounded-2xl space-y-3.5 text-left shadow-md shadow-emerald-950/20">
               <div className="w-9 h-9 rounded-xl bg-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-400/20">
                 6
               </div>
@@ -378,8 +376,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 5. WHO IT'S FOR SECTION (VISUAL INDUSTRY CARDS) ---------------- */}
-      <section className="relative bg-slate-50/70 py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 overflow-hidden">
+      {/* ---------------- 5. FEATURED SECTION #2: WHO IT'S FOR (SUBTLE NEUTRAL SURFACE #F7F8FA) ---------------- */}
+      <section className="relative bg-[#F7F8FA] py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-100/90 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="subtle" />
 
@@ -395,7 +393,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <Building2 className="w-5 h-5" />
               </div>
@@ -403,7 +401,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Manage property viewings and high-value buyers effortlessly.</p>
             </div>
 
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <Car className="w-5 h-5" />
               </div>
@@ -411,7 +409,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Track test drives, trade-ins, and automotive financing inquiries.</p>
             </div>
 
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <TrendingUp className="w-5 h-5" />
               </div>
@@ -419,7 +417,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Never let high-value consultative prospects go cold.</p>
             </div>
 
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
@@ -427,7 +425,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Maintain policy renewal reminders and quote follow-ups.</p>
             </div>
 
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <Briefcase className="w-5 h-5" />
               </div>
@@ -435,7 +433,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <p className="text-xs sm:text-sm text-slate-600">Stay top-of-mind with wealth management clients.</p>
             </div>
 
-            <div className="p-6 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
                 <Users className="w-5 h-5" />
               </div>
@@ -447,9 +445,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
         </div>
       </section>
 
-      {/* ---------------- 6. CALL TO ACTION SECTION (WARM & INVITING DEEP GRADIENT CARD) ---------------- */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="relative bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl overflow-hidden border border-emerald-500/30">
+      {/* ---------------- 6. CALL TO ACTION SECTION (WHITE BACKGROUND WITH DEEP SLATE CARD) ---------------- */}
+      <section className="bg-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+        <div className="relative bg-slate-900 text-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl overflow-hidden border border-slate-800">
           
           {/* CTA Three.js AI Signal Network Canvas */}
           <AiSignalNetworkCanvas intensity="cta" />
