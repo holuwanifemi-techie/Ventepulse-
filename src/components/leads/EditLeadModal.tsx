@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { updateLead } from '../../lib/leadService';
 import { Lead, LeadStage } from '../../types/database';
-import { X, Edit3, Phone, Mail, Building, Tag, Layers, FileText, Loader2, AlertCircle } from 'lucide-react';
+import { X, Edit3, Phone, Mail, Tag, Layers, FileText, Calendar, Loader2, AlertCircle } from 'lucide-react';
 
 const STAGE_OPTIONS: LeadStage[] = [
   'New',
@@ -37,7 +37,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
+  const [nextFollowupDate, setNextFollowupDate] = useState('');
   const [leadSource, setLeadSource] = useState('Direct Call');
   const [stage, setStage] = useState<LeadStage>('New');
   const [notes, setNotes] = useState('');
@@ -49,7 +49,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
       setFullName(lead.full_name || '');
       setPhone(lead.whatsapp_number || '');
       setEmail(lead.email || '');
-      setCompany(lead.company || '');
+      setNextFollowupDate(lead.next_followup_date ? lead.next_followup_date.split('T')[0] : '');
       setLeadSource(lead.lead_source || 'Direct Call');
       setStage(lead.stage || 'New');
       setNotes(lead.notes || '');
@@ -63,7 +63,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
     setErrorMessage(null);
 
     if (!fullName.trim() || !phone.trim()) {
-      setErrorMessage('Full Name and Phone Number are required.');
+      setErrorMessage('Name and Phone Number are required.');
       return;
     }
 
@@ -72,9 +72,9 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
       full_name: fullName.trim(),
       whatsapp_number: phone.trim(),
       email: email.trim() || undefined,
-      company: company.trim() || undefined,
       lead_source: leadSource,
       stage: stage,
+      next_followup_date: nextFollowupDate || undefined,
       notes: notes.trim() || undefined,
     });
     setLoading(false);
@@ -120,10 +120,10 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
+          {/* Name */}
           <div className="space-y-1">
             <label className="block text-xs font-semibold text-slate-300">
-              Full Name <span className="text-indigo-400">*</span>
+              Name <span className="text-indigo-400">*</span>
             </label>
             <input
               type="text"
@@ -151,12 +151,12 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
             </div>
           </div>
 
-          {/* Email & Company Grid */}
+          {/* Email & Next Follow-up Date Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Email */}
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">
-                Email Address
+                Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -169,18 +169,18 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
               </div>
             </div>
 
-            {/* Company */}
+            {/* Next Follow-up Date */}
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">
-                Company
+                Next Follow-up Date
               </label>
               <div className="relative">
-                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
-                  type="text"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  type="date"
+                  value={nextFollowupDate}
+                  onChange={(e) => setNextFollowupDate(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 [color-scheme:dark]"
                 />
               </div>
             </div>

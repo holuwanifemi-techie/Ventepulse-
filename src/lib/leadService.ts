@@ -7,9 +7,9 @@ export interface CreateLeadPayload {
   full_name: string;
   whatsapp_number: string;
   email?: string;
-  company?: string;
   lead_source?: string;
   stage: LeadStage;
+  next_followup_date?: string;
   notes?: string;
 }
 
@@ -17,9 +17,9 @@ export interface UpdateLeadPayload {
   full_name?: string;
   whatsapp_number?: string;
   email?: string;
-  company?: string;
   lead_source?: string;
   stage?: LeadStage;
+  next_followup_date?: string;
   notes?: string;
 }
 
@@ -44,7 +44,7 @@ export async function getLeads(
 
     if (searchQuery && searchQuery.trim()) {
       const q = `%${searchQuery.trim()}%`;
-      query = query.or(`full_name.ilike.${q},whatsapp_number.ilike.${q},company.ilike.${q},email.ilike.${q}`);
+      query = query.or(`full_name.ilike.${q},whatsapp_number.ilike.${q},email.ilike.${q}`);
     }
 
     const { data, error } = await query;
@@ -93,9 +93,9 @@ export async function createLead(payload: CreateLeadPayload): Promise<{ data: Le
         full_name: payload.full_name,
         whatsapp_number: payload.whatsapp_number,
         email: payload.email || null,
-        company: payload.company || null,
         lead_source: payload.lead_source || 'Direct',
         stage: payload.stage,
+        next_followup_date: payload.next_followup_date || null,
         notes: payload.notes || null,
       })
       .select()
@@ -105,7 +105,24 @@ export async function createLead(payload: CreateLeadPayload): Promise<{ data: Le
       return { data: null, error: new Error(error.message) };
     }
 
-    return { data: data as Lead, error: null };
+    const createdLead = data as Lead;
+
+    // Create corresponding follow-up record if next_followup_date is provided
+    if (payload.next_followup_date) {
+      try {
+        await supabase.from('followups').insert({
+          lead_id: createdLead.id,
+          user_id: payload.user_id,
+          sequence_day: 1,
+          scheduled_for: payload.next_followup_date,
+          status: 'pending',
+        });
+      } catch (fErr) {
+        console.warn('Failed to insert followup record:', fErr);
+      }
+    }
+
+    return { data: createdLead, error: null };
   } catch (err: any) {
     return { data: null, error: new Error(err.message || 'Failed to create lead') };
   }
@@ -133,7 +150,37 @@ export async function updateLead(
       return { data: null, error: new Error(error.message) };
     }
 
-    return { data: data as Lead, error: null };
+    const updatedLead = data as Lead;
+
+    // Sync followup record if next_followup_date is updated
+    if (payload.next_followup_date) {
+      try {
+        const { data: existingFollowup } = await supabase
+          .from('followups')
+          .select('id')
+          .eq('lead_id', leadId)
+          .maybeSingle();
+
+        if (existingFollowup) {
+          await supabase
+            .from('followups')
+            .update({ scheduled_for: payload.next_followup_date, status: 'pending' })
+            .eq('id', existingFollowup.id);
+        } else {
+          await supabase.from('followups').insert({
+            lead_id: leadId,
+            user_id: updatedLead.user_id,
+            sequence_day: 1,
+            scheduled_for: payload.next_followup_date,
+            status: 'pending',
+          });
+        }
+      } catch (fErr) {
+        console.warn('Failed to update followup record:', fErr);
+      }
+    }
+
+    return { data: updatedLead, error: null };
   } catch (err: any) {
     return { data: null, error: new Error(err.message || 'Failed to update lead') };
   }

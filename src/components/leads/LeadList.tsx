@@ -9,7 +9,7 @@ import { EditLeadModal } from './EditLeadModal';
 import { LeadDetailsModal } from './LeadDetailsModal';
 import { ImportLeadsModal } from './ImportLeadsModal';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
-import { Search, Plus, Phone, Building, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet } from 'lucide-react';
+import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
   'All',
@@ -72,6 +72,18 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
       };
     }
   }, [fetchLeads, user]);
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return dateString;
+    }
+  };
 
   const getStageBadgeClass = (stage: string) => {
     switch (stage) {
@@ -199,7 +211,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search leads by name, phone, company..."
+                placeholder="Search leads by name, phone, email..."
                 className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-2xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
               />
             </div>
@@ -288,24 +300,25 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
                           <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
                             {lead.full_name}
                           </h3>
-                          {lead.company ? (
-                            <p className="text-xs text-slate-400 flex items-center gap-1">
-                              <Building className="w-3 h-3 text-slate-500" />
-                              <span>{lead.company}</span>
-                            </p>
-                          ) : (
-                            <p className="text-xs text-slate-400 flex items-center gap-1">
-                              <Phone className="w-3 h-3 text-slate-500" />
-                              <span>{lead.whatsapp_number}</span>
-                            </p>
-                          )}
+                          <p className="text-xs text-slate-400 flex items-center gap-1">
+                            <Phone className="w-3 h-3 text-slate-500" />
+                            <span>{lead.whatsapp_number}</span>
+                          </p>
                         </div>
                       </div>
 
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${getStageBadgeClass(lead.stage)}`}>
-                        <Layers className="w-3 h-3" />
-                        {lead.stage}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {lead.next_followup_date && (
+                          <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-950/60 text-emerald-300 border border-emerald-800/50">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(lead.next_followup_date)}
+                          </span>
+                        )}
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${getStageBadgeClass(lead.stage)}`}>
+                          <Layers className="w-3 h-3" />
+                          {lead.stage}
+                        </span>
+                      </div>
                     </div>
 
                     {lead.notes && (

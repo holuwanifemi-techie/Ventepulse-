@@ -38,9 +38,9 @@ export interface Lead {
   full_name: string;
   whatsapp_number: string;
   email?: string;
-  company?: string;
   lead_source?: string;
   stage: LeadStage;
+  next_followup_date?: string;
   notes?: string;
   created_at: string;
   updated_at: string;

@@ -60,7 +60,6 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
     }
 
     const emailIdx = headers.findIndex(h => h.includes('email'));
-    const companyIdx = headers.findIndex(h => h.includes('company') || h.includes('business'));
     const stageIdx = headers.findIndex(h => h.includes('stage') || h.includes('status'));
     const sourceIdx = headers.findIndex(h => h.includes('source'));
     const notesIdx = headers.findIndex(h => h.includes('note') || h.includes('comment'));
@@ -85,7 +84,6 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
           full_name: fullName,
           whatsapp_number: phone,
           email: emailIdx !== -1 ? col[emailIdx] || null : null,
-          company: companyIdx !== -1 ? col[companyIdx] || null : null,
           lead_source: sourceIdx !== -1 ? col[sourceIdx] || 'Excel Import' : 'Excel Import',
           stage: matchedStage,
           notes: notesIdx !== -1 ? col[notesIdx] || null : null,
@@ -201,7 +199,7 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
 
           <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
             <p className="font-semibold text-slate-300">Expected File Columns:</p>
-            <p>Full Name <span className="text-rose-400">*</span>, Phone Number <span className="text-rose-400">*</span>, Email, Company, Stage, Notes</p>
+            <p>Full Name <span className="text-rose-400">*</span>, Phone Number <span className="text-rose-400">*</span>, Email, Stage, Notes</p>
           </div>
 
           <div className="flex items-center gap-3 pt-2">
@@ -214,7 +212,7 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={loading || !file}
+              disabled={loading}
               className="w-2/3 py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 disabled:opacity-50 font-bold text-xs text-slate-950 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               {loading ? (

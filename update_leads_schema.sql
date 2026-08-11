@@ -1,13 +1,16 @@
 -- ========================================================
--- FOLLOWUP ASSISTANT: SESSION 6 LEADS TABLE SCHEMA UPDATE
+-- VENTEPULSE: LEADS TABLE SCHEMA UPDATE
 -- ========================================================
 
--- 1. Add company and lead_source columns if they don't exist
+-- 1. Add next_followup_date column if it doesn't exist
 ALTER TABLE public.leads 
-  ADD COLUMN IF NOT EXISTS company TEXT,
+  ADD COLUMN IF NOT EXISTS next_followup_date TIMESTAMPTZ;
+
+-- 2. Drop company column if present or keep optional
+ALTER TABLE public.leads 
   ADD COLUMN IF NOT EXISTS lead_source TEXT DEFAULT 'Direct';
 
--- 2. Drop existing stage constraint if present and update to Session 6 stages
+-- 3. Ensure stage constraint
 ALTER TABLE public.leads DROP CONSTRAINT IF EXISTS leads_stage_check;
 
 ALTER TABLE public.leads 

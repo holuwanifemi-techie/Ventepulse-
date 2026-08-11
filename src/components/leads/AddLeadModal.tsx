@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { createLead } from '../../lib/leadService';
 import { LeadStage } from '../../types/database';
-import { X, UserPlus, Phone, Mail, Building, Tag, Layers, FileText, Loader2, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
+import { X, UserPlus, Phone, Mail, Tag, Layers, FileText, Calendar, Loader2, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
 
 const STAGE_OPTIONS: LeadStage[] = [
   'New',
@@ -39,7 +39,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
+  const [nextFollowupDate, setNextFollowupDate] = useState('');
   const [leadSource, setLeadSource] = useState('Direct Call');
   const [stage, setStage] = useState<LeadStage>('New');
   const [notes, setNotes] = useState('');
@@ -58,11 +58,11 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
         if (savedDraftStr) {
           try {
             const draft = JSON.parse(savedDraftStr);
-            if (draft.fullName || draft.phone || draft.email || draft.company || draft.notes) {
+            if (draft.fullName || draft.phone || draft.email || draft.nextFollowupDate || draft.notes) {
               setFullName(draft.fullName || '');
               setPhone(draft.phone || '');
               setEmail(draft.email || '');
-              setCompany(draft.company || '');
+              setNextFollowupDate(draft.nextFollowupDate || '');
               setLeadSource(draft.leadSource || 'Direct Call');
               setStage(draft.stage || 'New');
               setNotes(draft.notes || '');
@@ -81,13 +81,13 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
     if (isOpen && user) {
       const draftKey = getDraftKey();
       if (draftKey) {
-        if (fullName.trim() || phone.trim() || email.trim() || company.trim() || notes.trim()) {
-          const draft = { fullName, phone, email, company, leadSource, stage, notes };
+        if (fullName.trim() || phone.trim() || email.trim() || nextFollowupDate || notes.trim()) {
+          const draft = { fullName, phone, email, nextFollowupDate, leadSource, stage, notes };
           localStorage.setItem(draftKey, JSON.stringify(draft));
         }
       }
     }
-  }, [isOpen, user, fullName, phone, email, company, leadSource, stage, notes]);
+  }, [isOpen, user, fullName, phone, email, nextFollowupDate, leadSource, stage, notes]);
 
   const handleDiscardDraft = () => {
     const draftKey = getDraftKey();
@@ -97,7 +97,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
     setFullName('');
     setPhone('');
     setEmail('');
-    setCompany('');
+    setNextFollowupDate('');
     setLeadSource('Direct Call');
     setStage('New');
     setNotes('');
@@ -116,7 +116,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
     }
 
     if (!fullName.trim() || !phone.trim()) {
-      setErrorMessage('Full Name and Phone Number are required.');
+      setErrorMessage('Name and Phone Number are required.');
       return;
     }
 
@@ -127,9 +127,9 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
       full_name: fullName.trim(),
       whatsapp_number: phone.trim(),
       email: email.trim() || undefined,
-      company: company.trim() || undefined,
       lead_source: leadSource,
       stage: stage,
+      next_followup_date: nextFollowupDate || undefined,
       notes: notes.trim() || undefined,
     });
     setLoading(false);
@@ -145,7 +145,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
       setFullName('');
       setPhone('');
       setEmail('');
-      setCompany('');
+      setNextFollowupDate('');
       setLeadSource('Direct Call');
       setStage('New');
       setNotes('');
@@ -205,10 +205,10 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
+          {/* Name */}
           <div className="space-y-1">
             <label className="block text-xs font-semibold text-slate-300">
-              Full Name <span className="text-indigo-400">*</span>
+              Name <span className="text-indigo-400">*</span>
             </label>
             <input
               type="text"
@@ -220,7 +220,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
             />
           </div>
 
-          {/* Phone Number (Accepts with or without country code) */}
+          {/* Phone Number */}
           <div className="space-y-1">
             <label className="block text-xs font-semibold text-slate-300">
               Phone / WhatsApp Number <span className="text-indigo-400">*</span>
@@ -236,15 +236,14 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
             </div>
-            <p className="text-[10px] text-slate-500">Accepts numbers with (+234...) or without (080...) country code.</p>
           </div>
 
-          {/* Email & Company Grid */}
+          {/* Email & Next Follow-up Date Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Email */}
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">
-                Email Address (Optional)
+                Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -258,19 +257,18 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
               </div>
             </div>
 
-            {/* Company */}
+            {/* Next Follow-up Date */}
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">
-                Company (Optional)
+                Next Follow-up Date
               </label>
               <div className="relative">
-                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
-                  type="text"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  placeholder="Acme Corp"
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  type="date"
+                  value={nextFollowupDate}
+                  onChange={(e) => setNextFollowupDate(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 [color-scheme:dark]"
                 />
               </div>
             </div>

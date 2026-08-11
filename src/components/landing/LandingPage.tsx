@@ -17,7 +17,6 @@ import {
   Zap,
   X,
   Mail,
-  Phone,
   MapPin,
   ShieldAlert,
   FileText,
@@ -595,12 +594,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               )}
 
               {activeModal === 'contact' && (
-                <div className="space-y-2">
-                  <p>Have questions or need assistance? Reach out to our support team:</p>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2 font-mono text-slate-800">
-                    <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-emerald-600" /> support@ventepulse.com</div>
-                    <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-emerald-600" /> +1 (800) 555-0199</div>
-                    <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-emerald-600" /> San Francisco, CA</div>
+                <div className="space-y-3">
+                  <p className="text-slate-600 font-medium">Reach out to our support team:</p>
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 text-slate-800 text-xs">
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Email</span>
+                        <span className="font-semibold text-slate-900">ventepulse@gmail.com</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 pt-2 border-t border-slate-200/60">
+                      <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Location</span>
+                        <span className="font-semibold text-slate-900">Lagos</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

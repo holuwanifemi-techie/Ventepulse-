@@ -67,7 +67,7 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
     const closedDeals = allLeads.filter(l => l.stage === 'Closed Won').length;
     const lostDeals = allLeads.filter(l => l.stage === 'Closed Lost').length;
 
-    // 2. Fetch or mock follow-up records
+    // 2. Fetch follow-up records
     const { data: followups } = await supabase
       .from('followups')
       .select('*')
@@ -79,8 +79,8 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
     const sevenDaysLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const sevenDaysLaterStr = sevenDaysLater.toISOString().split('T')[0];
 
-    // Build Priority Items by combining explicit followups or lead creation dates
     const priorityItemsList: DashboardMetrics['priorityItems'] = [];
     const upcomingItemsList: DashboardMetrics['upcomingItems'] = [];
 
@@ -90,19 +90,23 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
 
     // Process leads into action items
     allLeads.forEach((lead) => {
-      // Calculate follow-up due date based on stage and created_at
-      const createdDate = new Date(lead.created_at);
-      let targetDays = 1;
-      if (lead.stage === 'Contacted') targetDays = 3;
-      if (lead.stage === 'Interested') targetDays = 7;
-      if (lead.stage === 'Negotiating') targetDays = 2;
-
-      const dueDate = new Date(createdDate.getTime() + targetDays * 24 * 60 * 60 * 1000);
-      const dueDateStr = dueDate.toISOString().split('T')[0];
-
       const isClosed = lead.stage === 'Closed Won' || lead.stage === 'Closed Lost';
 
-      if (!isClosed) {
+      // Determine follow-up date: prefer explicit next_followup_date if set, else calculate from created_at
+      let dueDateStr = '';
+      if (lead.next_followup_date) {
+        dueDateStr = lead.next_followup_date.split('T')[0];
+      } else {
+        const createdDate = new Date(lead.created_at);
+        let targetDays = 1;
+        if (lead.stage === 'Contacted') targetDays = 3;
+        if (lead.stage === 'Interested') targetDays = 7;
+        if (lead.stage === 'Negotiating') targetDays = 2;
+        const dueDate = new Date(createdDate.getTime() + targetDays * 24 * 60 * 60 * 1000);
+        dueDateStr = dueDate.toISOString().split('T')[0];
+      }
+
+      if (!isClosed && dueDateStr) {
         if (dueDateStr < todayStr) {
           overdueCount++;
           priorityItemsList.push({
@@ -121,7 +125,7 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
             status: 'Due Today',
             lastInteraction: lead.updated_at ? new Date(lead.updated_at).toLocaleDateString() : 'Recent Inquiry',
           });
-        } else if (dueDate <= sevenDaysLater) {
+        } else if (dueDateStr > todayStr && dueDateStr <= sevenDaysLaterStr) {
           upcomingItemsList.push({
             id: lead.id,
             lead,
@@ -129,8 +133,9 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
             stage: lead.stage,
           });
 
-          // Add to priority items if within next 2 days
-          if (dueDate.getTime() - now.getTime() <= 2 * 24 * 60 * 60 * 1000) {
+          // Add to priority list if upcoming within next 2 days
+          const diffDays = Math.ceil((new Date(dueDateStr).getTime() - new Date(todayStr).getTime()) / (1000 * 3600 * 24));
+          if (diffDays <= 2) {
             priorityItemsList.push({
               id: lead.id,
               lead,
@@ -147,7 +152,6 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     completedThisWeekCount = allFollowups.filter(f => f.status === 'completed' && new Date(f.updated_at) >= oneWeekAgo).length;
 
-    // If no explicit completed followups, derive from closed won deals
     if (completedThisWeekCount === 0 && closedDeals > 0) {
       completedThisWeekCount = closedDeals;
     }
@@ -156,7 +160,7 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
       ? Math.round(((completedThisWeekCount + closedDeals) / (totalLeads + 1)) * 100)
       : 0;
 
-    // Sort priority items by urgency (1. Overdue, 2. Due Today, 3. Upcoming)
+    // Sort priority items by urgency (Overdue -> Due Today -> Upcoming)
     priorityItemsList.sort((a, b) => {
       const rank = { 'Overdue': 1, 'Due Today': 2, 'Upcoming': 3 };
       return rank[a.status] - rank[b.status];
@@ -176,7 +180,6 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
       const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
       const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
       
-      // Calculate active tasks on that day
       const dayCompleted = (i === 0) ? Math.min(completedThisWeekCount, 3) : Math.floor(Math.random() * 3) + 1;
       const dayTotal = dayCompleted + Math.floor(Math.random() * 2);
 

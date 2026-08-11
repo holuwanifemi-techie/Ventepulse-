@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Lead, Business } from '../../types/database';
 import { deleteLead } from '../../lib/leadService';
 import { AIMessagePreviewModal } from './AIMessagePreviewModal';
-import { X, Phone, Mail, Building, Tag, Layers, Calendar, MessageSquare, Edit3, Trash2, Loader2 } from 'lucide-react';
+import { X, Phone, Mail, Tag, Layers, Calendar, MessageSquare, Edit3, Trash2, Loader2 } from 'lucide-react';
 
 interface LeadDetailsModalProps {
   lead: Lead | null;
@@ -85,12 +85,10 @@ export const LeadDetailsModal: React.FC<LeadDetailsModalProps> = ({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white tracking-tight">{lead.full_name}</h2>
-                {lead.company && (
-                  <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                    <Building className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{lead.company}</span>
-                  </p>
-                )}
+                <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                  <Phone className="w-3.5 h-3.5 text-slate-500" />
+                  <span>{lead.whatsapp_number}</span>
+                </p>
               </div>
             </div>
             <button
@@ -139,9 +137,18 @@ export const LeadDetailsModal: React.FC<LeadDetailsModalProps> = ({
 
             <div className="flex items-center justify-between text-xs py-1 border-b border-slate-800/50">
               <span className="flex items-center gap-2 text-slate-400">
-                <Mail className="w-4 h-4 text-slate-500" /> Email Address
+                <Mail className="w-4 h-4 text-slate-500" /> Email
               </span>
               <span className="text-slate-200">{lead.email || '—'}</span>
+            </div>
+
+            <div className="flex items-center justify-between text-xs py-1 border-b border-slate-800/50">
+              <span className="flex items-center gap-2 text-slate-400">
+                <Calendar className="w-4 h-4 text-slate-500" /> Next Follow-up Date
+              </span>
+              <span className="text-emerald-400 font-semibold">
+                {lead.next_followup_date ? formatDate(lead.next_followup_date) : 'Not scheduled'}
+              </span>
             </div>
 
             <div className="flex items-center justify-between text-xs py-1 border-b border-slate-800/50">
@@ -169,7 +176,7 @@ export const LeadDetailsModal: React.FC<LeadDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Bottom Actions with Permanent Delete Lead Button */}
+          {/* Bottom Actions */}
           <div className="flex items-center gap-3 pt-2 border-t border-slate-800">
             <button
               type="button"
