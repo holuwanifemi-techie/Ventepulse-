@@ -19,9 +19,7 @@ import {
   ChevronRight,
   Loader2,
   Sparkles,
-  RefreshCw,
-  Plus,
-  FileSpreadsheet
+  RefreshCw
 } from 'lucide-react';
 
 interface UserDashboardViewProps {
@@ -35,7 +33,6 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
   userId,
   business,
   onNavigateToLeads,
-  onOpenAddLead,
 }) => {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,7 +120,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
     <div className="space-y-6 sm:space-y-8 pb-12">
       
       {/* Quick Action Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/60 p-4 rounded-3xl border border-slate-800">
+      <div className="flex items-center justify-between gap-3 bg-slate-900/60 p-4 rounded-3xl border border-slate-800">
         <div>
           <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">
             {business.business_name}
@@ -131,32 +128,14 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           <h2 className="text-lg font-extrabold text-white">Daily Focus & Live Analytics</h2>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={fetchMetrics}
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition-all cursor-pointer"
+            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition-all cursor-pointer flex items-center justify-center"
             title="Refresh Metrics"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsImportModalOpen(true)}
-            className="py-2.5 px-3.5 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-teal-400" />
-            <span>Import Leads</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenAddLead}
-            className="py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1.5 transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Lead</span>
           </button>
         </div>
       </div>
