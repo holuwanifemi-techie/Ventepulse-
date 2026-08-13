@@ -297,53 +297,29 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         )}
       </div>
 
-      {/* ---------------- 3. UPCOMING FOLLOW-UPS & 6. RECENT ACTIVITY GRID ---------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* 3. Upcoming Follow-ups (Next 7 Days) */}
-        <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-400" /> Upcoming Follow-ups (7 Days)
-          </h3>
+      {/* ---------------- 3. UPCOMING FOLLOW-UPS (7 DAYS) ---------------- */}
+      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-emerald-400" /> Upcoming Follow-ups (7 Days)
+        </h3>
 
-          {metrics?.upcomingItems.length === 0 ? (
-            <p className="text-xs text-slate-500 py-6 text-center">No upcoming follow-ups scheduled for the next 7 days.</p>
-          ) : (
-            <div className="space-y-2.5">
-              {metrics?.upcomingItems.map((item) => (
-                <div key={item.id} className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
-                  <div>
-                    <div className="font-bold text-white">{item.lead.full_name}</div>
-                    <div className="text-[10px] text-slate-400">Scheduled: {formatDate(item.followupDate)}</div>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] border ${getStageBadge(item.stage)}`}>
-                    {item.stage}
-                  </span>
+        {metrics?.upcomingItems.length === 0 ? (
+          <p className="text-xs text-slate-500 py-6 text-center">No upcoming follow-ups scheduled for the next 7 days.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {metrics?.upcomingItems.map((item) => (
+              <div key={item.id} className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
+                <div>
+                  <div className="font-bold text-white">{item.lead.full_name}</div>
+                  <div className="text-[10px] text-slate-400">Scheduled: {formatDate(item.followupDate)}</div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 6. Recent Activity Stream */}
-        <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Activity className="w-4 h-4 text-indigo-400" /> Recent Workspace Activity
-          </h3>
-
-          <div className="space-y-2.5">
-            {metrics?.recentActivity.map((act) => (
-              <div key={act.id} className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                  <span className="text-slate-200 font-medium">{act.title}</span>
-                </div>
-                <span className="text-[10px] text-slate-500">{formatDate(act.timestamp)}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] border ${getStageBadge(item.stage)}`}>
+                  {item.stage}
+                </span>
               </div>
             ))}
           </div>
-        </div>
-
+        )}
       </div>
 
       {/* ---------------- 4. PERFORMANCE SUMMARY CARDS ---------------- */}

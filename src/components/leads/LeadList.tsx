@@ -132,15 +132,6 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
 
           <button
             type="button"
-            onClick={() => setIsImportModalOpen(true)}
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 rounded-xl transition-all cursor-pointer flex items-center justify-center"
-            title="Import Leads from Excel/CSV"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-teal-400" />
-          </button>
-
-          <button
-            type="button"
             onClick={signOut}
             title="Sign Out"
             className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-all cursor-pointer flex items-center justify-center"
