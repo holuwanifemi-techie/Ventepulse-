@@ -32,7 +32,6 @@ export interface DashboardMetrics {
   completionRate: number;
 
   // 5. Analytics Charts Data
-  activityData: { label: string; completed: number; total: number }[];
   pipelineData: { stage: LeadStage; count: number; percentage: number }[];
 
   // 6. Recent Activity Log
@@ -180,23 +179,7 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
       return { stage, count, percentage };
     });
 
-    // 4. Follow-up Activity over time (Last 7 Days)
-    const activityData: DashboardMetrics['activityData'] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
-      
-      const dayCompleted = (i === 0) ? Math.min(completedThisWeekCount, 3) : Math.floor(Math.random() * 3) + 1;
-      const dayTotal = dayCompleted + Math.floor(Math.random() * 2);
-
-      activityData.push({
-        label: dayName,
-        completed: Math.max(dayCompleted, 1),
-        total: Math.max(dayTotal, 2),
-      });
-    }
-
-    // 5. Recent Activity Stream
+    // 4. Recent Activity Stream
     const recentActivityList: DashboardMetrics['recentActivity'] = [];
 
     allLeads.slice(0, 5).forEach((lead) => {
@@ -238,7 +221,6 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
         closedDeals,
         lostDeals,
         completionRate: Math.min(completionRate, 100),
-        activityData,
         pipelineData,
         recentActivity: recentActivityList,
       },

@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
-  Activity,
   ChevronRight,
   Loader2,
   RefreshCw,
@@ -297,28 +296,6 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
             ))}
           </div>
         )}
-      </div>
-
-      {/* ---------------- 4. LIVE FOLLOW-UP ACTIVITY ---------------- */}
-      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <Activity className="w-4 h-4 text-emerald-400" /> Live Follow-up Activity
-        </h3>
-        <p className="text-xs text-slate-400">Completed follow-ups over the last 7 days</p>
-
-        <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-slate-800">
-          {metrics?.activityData.map((d, idx) => (
-            <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-              <div className="w-full bg-emerald-500/20 rounded-t-lg relative flex items-end justify-center" style={{ height: `${Math.max((d.total / (metrics.totalLeads || 5)) * 100, 15)}%` }}>
-                <div
-                  className="w-full bg-emerald-500 rounded-t-lg transition-all"
-                  style={{ height: `${(d.completed / (d.total || 1)) * 100}%` }}
-                />
-              </div>
-              <span className="text-[10px] text-slate-400 font-semibold">{d.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* AI Message Preview Modal Trigger */}
