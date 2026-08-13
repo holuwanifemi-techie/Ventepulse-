@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
-  Layers,
   Activity,
   ChevronRight,
   Loader2,
@@ -300,56 +299,26 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         )}
       </div>
 
-      {/* ---------------- 4. ANALYTICS CHARTS (REMAINING ANALYTICS) ---------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* Chart 1: Live Follow-up Activity */}
-        <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-400" /> Live Follow-up Activity
-          </h3>
-          <p className="text-xs text-slate-400">Completed follow-ups over the last 7 days</p>
+      {/* ---------------- 4. LIVE FOLLOW-UP ACTIVITY ---------------- */}
+      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <Activity className="w-4 h-4 text-emerald-400" /> Live Follow-up Activity
+        </h3>
+        <p className="text-xs text-slate-400">Completed follow-ups over the last 7 days</p>
 
-          <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-slate-800">
-            {metrics?.activityData.map((d, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                <div className="w-full bg-emerald-500/20 rounded-t-lg relative flex items-end justify-center" style={{ height: `${Math.max((d.total / (metrics.totalLeads || 5)) * 100, 15)}%` }}>
-                  <div
-                    className="w-full bg-emerald-500 rounded-t-lg transition-all"
-                    style={{ height: `${(d.completed / (d.total || 1)) * 100}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-400 font-semibold">{d.label}</span>
+        <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b border-slate-800">
+          {metrics?.activityData.map((d, idx) => (
+            <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+              <div className="w-full bg-emerald-500/20 rounded-t-lg relative flex items-end justify-center" style={{ height: `${Math.max((d.total / (metrics.totalLeads || 5)) * 100, 15)}%` }}>
+                <div
+                  className="w-full bg-emerald-500 rounded-t-lg transition-all"
+                  style={{ height: `${(d.completed / (d.total || 1)) * 100}%` }}
+                />
               </div>
-            ))}
-          </div>
+              <span className="text-[10px] text-slate-400 font-semibold">{d.label}</span>
+            </div>
+          ))}
         </div>
-
-        {/* Chart 2: Live Lead Pipeline Distribution */}
-        <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-400" /> Live Lead Pipeline
-          </h3>
-          <p className="text-xs text-slate-400">Leads grouped by current stage</p>
-
-          <div className="space-y-3 pt-1">
-            {metrics?.pipelineData.map((p) => (
-              <div key={p.stage} className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-300">{p.stage}</span>
-                  <span className="text-slate-400 font-mono">{p.count} leads ({p.percentage}%)</span>
-                </div>
-                <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                  <div
-                    className="h-full bg-emerald-500 rounded-full transition-all"
-                    style={{ width: `${Math.max(p.percentage, p.count > 0 ? 5 : 0)}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
 
       {/* AI Message Preview Modal Trigger */}
