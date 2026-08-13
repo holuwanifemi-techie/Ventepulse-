@@ -10,15 +10,10 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
-  TrendingUp,
   Layers,
-  Users,
-  Target,
-  XCircle,
   Activity,
   ChevronRight,
   Loader2,
-  Sparkles,
   RefreshCw,
   Plus,
   FileSpreadsheet
@@ -161,8 +156,8 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         </div>
       </div>
 
-      {/* ---------------- 1. PRIORITY SUMMARY CARDS ---------------- */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      {/* ---------------- 1. PRIORITY SUMMARY CARDS (3 CARDS) ---------------- */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         
         {/* Overdue Follow-ups */}
         <div className="p-4 sm:p-5 bg-slate-900/90 border border-rose-900/50 rounded-2xl space-y-2 relative overflow-hidden shadow-xl">
@@ -175,7 +170,6 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           <div className="text-2xl sm:text-3xl font-extrabold text-rose-400">
             {metrics?.overdueFollowups || 0}
           </div>
-          <div className="text-[11px] text-rose-400 font-medium">Requires immediate action</div>
         </div>
 
         {/* Follow-ups Due Today */}
@@ -189,21 +183,6 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-400">
             {metrics?.followupsDueToday || 0}
           </div>
-          <div className="text-[11px] text-amber-400 font-medium">Scheduled for today</div>
-        </div>
-
-        {/* Leads Requiring Attention */}
-        <div className="p-4 sm:p-5 bg-slate-900/90 border border-indigo-900/50 rounded-2xl space-y-2 relative overflow-hidden shadow-xl">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-            <span>Needs Attention</span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Sparkles className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-indigo-400">
-            {metrics?.leadsRequiringAttention || 0}
-          </div>
-          <div className="text-[11px] text-indigo-400 font-medium">Total active priorities</div>
         </div>
 
         {/* Completed This Week */}
@@ -217,7 +196,6 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
             {metrics?.completedThisWeek || 0}
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">Follow-ups executed</div>
         </div>
 
       </div>
@@ -322,51 +300,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         )}
       </div>
 
-      {/* ---------------- 4. PERFORMANCE SUMMARY CARDS ---------------- */}
-      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-emerald-400" /> Live Performance Summary
-        </h3>
-
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-1">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
-              <Users className="w-3.5 h-3.5 text-indigo-400" /> Total Leads
-            </div>
-            <div className="text-xl font-extrabold text-white">{metrics?.totalLeads || 0}</div>
-          </div>
-
-          <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-1">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
-              <Layers className="w-3.5 h-3.5 text-teal-400" /> Active Leads
-            </div>
-            <div className="text-xl font-extrabold text-white">{metrics?.activeLeads || 0}</div>
-          </div>
-
-          <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-1">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
-              <Target className="w-3.5 h-3.5 text-emerald-400" /> Closed Deals
-            </div>
-            <div className="text-xl font-extrabold text-emerald-400">{metrics?.closedDeals || 0}</div>
-          </div>
-
-          <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-1">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
-              <XCircle className="w-3.5 h-3.5 text-rose-400" /> Lost Deals
-            </div>
-            <div className="text-xl font-extrabold text-slate-300">{metrics?.lostDeals || 0}</div>
-          </div>
-
-          <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-1 col-span-2 sm:col-span-1">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Completion Rate
-            </div>
-            <div className="text-xl font-extrabold text-emerald-400">{metrics?.completionRate || 0}%</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ---------------- 5. ANALYTICS (2 SIMPLE CHARTS USING LIVE DATA) ---------------- */}
+      {/* ---------------- 4. ANALYTICS CHARTS (REMAINING ANALYTICS) ---------------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Chart 1: Live Follow-up Activity */}

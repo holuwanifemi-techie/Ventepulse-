@@ -18,7 +18,8 @@ export interface Business {
   id: string;
   user_id: string;
   business_name: string;
-  business_type: BusinessType;
+  business_type: BusinessType | string;
+  custom_business_type?: string;
   created_at: string;
   updated_at: string;
 }

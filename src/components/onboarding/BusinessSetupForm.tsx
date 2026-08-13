@@ -39,12 +39,18 @@ export const BusinessSetupForm: React.FC<BusinessSetupFormProps> = ({ onComplete
       return;
     }
 
-    const finalType = businessType === 'Other' && customBusinessType.trim()
-      ? (customBusinessType.trim() as BusinessType)
-      : businessType;
+    if (businessType === 'Other' && !customBusinessType.trim()) {
+      setErrorMessage('Please specify your custom business type.');
+      return;
+    }
 
     setLoading(true);
-    const { error } = await createBusinessProfile(user.id, businessName.trim(), finalType);
+    const { error } = await createBusinessProfile(
+      user.id,
+      businessName.trim(),
+      businessType,
+      customBusinessType.trim()
+    );
     setLoading(false);
 
     if (error) {
@@ -131,7 +137,7 @@ export const BusinessSetupForm: React.FC<BusinessSetupFormProps> = ({ onComplete
                 type="text"
                 value={customBusinessType}
                 onChange={(e) => setCustomBusinessType(e.target.value)}
-                placeholder="Specify your business type"
+                placeholder="e.g. Book Seller"
                 required
                 className="w-full px-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
               />

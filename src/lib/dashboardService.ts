@@ -3,7 +3,6 @@ import { Lead, Followup, LeadStage } from '../types/database';
 
 export interface DashboardMetrics {
   // 1. Priority Summary
-  leadsRequiringAttention: number;
   followupsDueToday: number;
   overdueFollowups: number;
   completedThisWeek: number;
@@ -229,7 +228,6 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
 
     return {
       data: {
-        leadsRequiringAttention: overdueCount + dueTodayCount,
         followupsDueToday: dueTodayCount,
         overdueFollowups: overdueCount,
         completedThisWeek: completedThisWeekCount,
