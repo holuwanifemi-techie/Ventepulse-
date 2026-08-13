@@ -74,6 +74,12 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
       .eq('user_id', userId);
 
     const allFollowups: Followup[] = followups || [];
+    const followupMap = new Map<string, string>();
+    allFollowups.forEach(f => {
+      if (f.lead_id && f.scheduled_for) {
+        followupMap.set(f.lead_id, f.scheduled_for);
+      }
+    });
 
     // Calculate dates
     const now = new Date();
@@ -92,10 +98,11 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
     allLeads.forEach((lead) => {
       const isClosed = lead.stage === 'Closed Won' || lead.stage === 'Closed Lost';
 
-      // Determine follow-up date: prefer explicit next_followup_date if set, else calculate from created_at
+      // Determine follow-up date: prefer explicit next_followup_date, then followupMap, then fallback created_at math
+      const targetDate = lead.next_followup_date || followupMap.get(lead.id);
       let dueDateStr = '';
-      if (lead.next_followup_date) {
-        dueDateStr = lead.next_followup_date.split('T')[0];
+      if (targetDate) {
+        dueDateStr = targetDate.split('T')[0];
       } else {
         const createdDate = new Date(lead.created_at);
         let targetDays = 1;
