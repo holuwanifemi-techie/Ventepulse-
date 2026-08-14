@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getAdminPlatformStats, deleteUserAdmin, ADMIN_EMAIL } from '../../lib/adminService';
+import { getAdminPlatformStats, deleteUserAdmin, checkIsAdmin, ADMIN_EMAIL } from '../../lib/adminService';
 import { supabase } from '../../lib/supabase';
 import { AdminPlatformStats } from '../../types/database';
 import {
@@ -26,18 +26,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
   const { user, signOut } = useAuth();
   const [stats, setStats] = useState<AdminPlatformStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Strict check if current logged in email is the single admin account
-  const isAuthorizedAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const verifyAdminAuth = useCallback(async () => {
+    if (!user) {
+      setIsAuthorized(false);
+      setLoading(false);
+      return false;
+    }
+    const authorized = await checkIsAdmin(user.id, user.email);
+    setIsAuthorized(authorized);
+    return authorized;
+  }, [user]);
 
-  const fetchStats = async () => {
-    if (!isAuthorizedAdmin) return;
-
+  const fetchStats = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
     setErrorMessage(null);
+
     const { data, error } = await getAdminPlatformStats();
     setLoading(false);
 
@@ -46,43 +55,45 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
     } else {
       setStats(data);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    fetchStats();
+    verifyAdminAuth().then((authorized) => {
+      if (authorized) {
+        fetchStats();
 
-    if (isAuthorizedAdmin) {
-      // Attach Real-Time Postgres listener for instant no-refresh Admin updates on new users or deletions
-      const channel = supabase
-        .channel('realtime-admin-dashboard')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'profiles' },
-          () => {
-            fetchStats();
-          }
-        )
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'businesses' },
-          () => {
-            fetchStats();
-          }
-        )
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'leads' },
-          () => {
-            fetchStats();
-          }
-        )
-        .subscribe();
+        // Attach Real-Time Postgres listener for instant no-refresh Admin updates on new users or deletions
+        const channel = supabase
+          .channel('realtime-admin-dashboard')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'profiles' },
+            () => {
+              fetchStats();
+            }
+          )
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'businesses' },
+            () => {
+              fetchStats();
+            }
+          )
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'leads' },
+            () => {
+              fetchStats();
+            }
+          )
+          .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
-  }, [user, isAuthorizedAdmin]);
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      }
+    });
+  }, [verifyAdminAuth, fetchStats]);
 
   const handleDeleteUser = async (targetUserId: string, targetEmail: string) => {
     if (targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -109,7 +120,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
     }
   };
 
-  if (!isAuthorizedAdmin) {
+  if (!isAuthorized && !loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md bg-slate-900 border border-red-500/30 rounded-3xl p-6 sm:p-8 text-center space-y-5 shadow-2xl">

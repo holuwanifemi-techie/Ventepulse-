@@ -4,11 +4,32 @@ import { AdminPlatformStats } from '../types/database';
 export const ADMIN_EMAIL = 'ventepulse@gmail.com';
 
 /**
- * Verify if the logged in user is the single shared Administrator account.
+ * Verify if the logged in user is the single shared Administrator account or marked as admin.
  */
 export async function checkIsAdmin(userId: string, email?: string): Promise<boolean> {
-  if (!userId || !email) return false;
-  return email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  if (!userId) return false;
+  
+  if (email && email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+    return true;
+  }
+
+  try {
+    const { data } = await supabase
+      .from('profiles')
+      .select('is_admin, email')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (data) {
+      if (data.is_admin || data.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        return true;
+      }
+    }
+  } catch (e) {
+    // Ignore error
+  }
+
+  return false;
 }
 
 /**
@@ -18,7 +39,12 @@ export async function deleteUserAdmin(targetUserId: string): Promise<{ error: Er
   try {
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    if (!user) {
+      return { error: new Error('Unauthorized access. Admin privileges required.') };
+    }
+
+    const isAdmin = await checkIsAdmin(user.id, user.email);
+    if (!isAdmin) {
       return { error: new Error('Unauthorized access. Admin privileges required.') };
     }
 
@@ -54,15 +80,19 @@ export async function getAdminPlatformStats(): Promise<{ data: AdminPlatformStat
   try {
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Strict Admin Authorization Check
-    if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    if (!user) {
       return { data: null, error: new Error('Unauthorized access. Admin privileges required.') };
     }
 
-    // 1. Fetch total users from public.profiles using existing table columns
+    const isAdmin = await checkIsAdmin(user.id, user.email);
+    if (!isAdmin) {
+      return { data: null, error: new Error('Unauthorized access. Admin privileges required.') };
+    }
+
+    // 1. Fetch total users from public.profiles
     const { data: profiles, error: profilesErr } = await supabase
       .from('profiles')
-      .select('id, email, full_name, created_at')
+      .select('id, email, full_name, created_at, is_admin')
       .order('created_at', { ascending: false });
 
     if (profilesErr) throw new Error(profilesErr.message);
