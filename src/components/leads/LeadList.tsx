@@ -9,8 +9,9 @@ import { EditLeadModal } from './EditLeadModal';
 import { LeadDetailsModal } from './LeadDetailsModal';
 import { ImportLeadsModal } from './ImportLeadsModal';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
+import { UserSettingsView } from '../settings/UserSettingsView';
 import { VentepulseLogo } from '../brand/VentepulseLogo';
-import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet } from 'lucide-react';
+import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet, Settings } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
   'All',
@@ -29,7 +30,7 @@ interface LeadListProps {
 
 export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => {
   const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'leads'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'leads' | 'settings'>('dashboard');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -57,7 +58,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
       checkIsAdmin(user.id, user.email).then(setIsAdmin);
 
       // Attach Real-Time Postgres listener for instant no-refresh lead updates
-      const channel = supabase
+      const leadChannel = supabase
         .channel(`realtime-leadlist-${user.id}`)
         .on(
           'postgres_changes',
@@ -69,7 +70,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
         .subscribe();
 
       return () => {
-        supabase.removeChannel(channel);
+        supabase.removeChannel(leadChannel);
       };
     }
   }, [fetchLeads, user]);
@@ -108,7 +109,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20">
       
-      {/* Top Header */}
+      {/* Top Dashboard Header */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="space-y-0.5">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block">
@@ -131,6 +132,19 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
             </button>
           )}
 
+          {/* Standard Professional Settings Gear Icon */}
+          <button
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'settings' ? 'dashboard' : 'settings')}
+            title="Settings"
+            className={`p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-all cursor-pointer flex items-center justify-center ${
+              activeTab === 'settings' ? 'text-emerald-400 border border-emerald-500/40 bg-slate-800/90' : ''
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+
+          {/* Logout Button */}
           <button
             type="button"
             onClick={signOut}
@@ -145,7 +159,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
       {/* Main Container */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6">
         
-        {/* Workspace View Switcher Tabs */}
+        {/* Workspace View Switcher Tabs (Balanced 2-column layout) */}
         <div className="grid grid-cols-2 p-1.5 bg-slate-900 border border-slate-800 rounded-2xl">
           <button
             type="button"
@@ -174,16 +188,18 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
           </button>
         </div>
 
-        {/* Tab 1: Action-Focused Dashboard & Analytics View */}
-        {activeTab === 'dashboard' ? (
+        {/* Tab 1: Dashboard & Priorities View */}
+        {activeTab === 'dashboard' && (
           <UserDashboardView
             userId={user?.id || ''}
             business={business}
             onNavigateToLeads={() => setActiveTab('leads')}
             onOpenAddLead={() => setIsAddModalOpen(true)}
           />
-        ) : (
-          /* Tab 2: Lead List View */
+        )}
+
+        {/* Tab 2: Lead Workspace View */}
+        {activeTab === 'leads' && (
           <div className="space-y-4">
             
             {/* Search Bar & Add Lead Trigger */}
@@ -325,6 +341,12 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
             )}
           </div>
         )}
+
+        {/* Tab 3: User Settings View */}
+        {activeTab === 'settings' && (
+          <UserSettingsView />
+        )}
+
       </main>
 
       {/* Modals */}

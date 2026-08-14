@@ -10,9 +10,12 @@ export interface Profile {
   id: string;
   email: string;
   full_name?: string;
+  avatar_url?: string;
   is_admin?: boolean;
   created_at: string;
 }
+
+export type UserProfile = Profile;
 
 export interface Business {
   id: string;
@@ -53,12 +56,12 @@ export interface Followup {
   id: string;
   lead_id: string;
   user_id: string;
-  sequence_day: 1 | 3 | 7;
-  scheduled_for: string;
+  due_date?: string;
+  scheduled_for?: string;
   status: FollowupStatus;
-  ai_message_draft?: string;
+  notes?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface AdminPlatformStats {
@@ -66,13 +69,13 @@ export interface AdminPlatformStats {
   totalBusinesses: number;
   totalLeads: number;
   registrationsToday: number;
-  recentUsers: {
+  recentUsers: Array<{
     id: string;
     email: string;
     full_name?: string;
-    created_at: string;
     business_name?: string;
     business_type?: string;
+    created_at: string;
     leads_count: number;
-  }[];
+  }>;
 }

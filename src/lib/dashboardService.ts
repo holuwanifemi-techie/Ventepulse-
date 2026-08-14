@@ -155,7 +155,7 @@ export async function getDashboardMetrics(userId: string): Promise<{ data: Dashb
 
     // Count completed followups this week
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    completedThisWeekCount = allFollowups.filter(f => f.status === 'completed' && new Date(f.updated_at) >= oneWeekAgo).length;
+    completedThisWeekCount = allFollowups.filter(f => f.status === 'completed' && new Date(f.updated_at || f.created_at) >= oneWeekAgo).length;
 
     if (completedThisWeekCount === 0 && closedDeals > 0) {
       completedThisWeekCount = closedDeals;
