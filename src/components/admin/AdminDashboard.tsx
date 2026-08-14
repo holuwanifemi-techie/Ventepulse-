@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getAdminPlatformStats, deleteUserAdmin, checkIsAdmin, ADMIN_EMAIL } from '../../lib/adminService';
 import { supabase } from '../../lib/supabase';
 import { AdminPlatformStats } from '../../types/database';
+import { VentepulseLogo } from '../brand/VentepulseLogo';
 import {
   ShieldAlert,
   Users,
@@ -173,7 +174,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
       
       {/* Admin Top Header */}
       <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             type="button"
             onClick={onBackToApp}
@@ -183,11 +184,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
             <span className="hidden sm:inline">Return to App</span>
           </button>
 
-          <div>
+          <div className="space-y-0.5">
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
               <ShieldAlert className="w-3.5 h-3.5" /> Shared Administrator Portal
             </div>
-            <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">Platform Growth Dashboard</h1>
+            <div className="flex items-center gap-2">
+              <VentepulseLogo size="xs" theme="dark" />
+              <span className="text-xs sm:text-sm font-semibold text-slate-400">| Growth Monitor</span>
+            </div>
           </div>
         </div>
 

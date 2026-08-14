@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AiSignalNetworkCanvas } from './AiSignalNetworkCanvas';
+import { VentepulseLogo } from '../brand/VentepulseLogo';
 import {
   MessageSquare,
   Calendar,
@@ -10,7 +11,6 @@ import {
   Car,
   ShieldCheck,
   TrendingUp,
-  Briefcase,
   Clock,
   Plus,
   FileSpreadsheet,
@@ -45,12 +45,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             className="flex items-center gap-2.5 cursor-pointer group" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
-              <Zap className="w-5 h-5 fill-current text-slate-950" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              Ventepulse
-            </span>
+            <VentepulseLogo size="md" theme="light" />
           </div>
 
           {/* Header Action Buttons */}
@@ -118,38 +113,46 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
           <div className="lg:col-span-5 max-w-sm sm:max-w-md mx-auto lg:max-w-none w-full -mb-20 sm:-mb-28 relative z-20">
             <div className="bg-slate-900 text-white border-8 border-slate-800 rounded-[2.5rem] p-5 shadow-2xl space-y-4 text-left hover:-translate-y-1 transition-transform duration-300">
               
-              <div className="w-20 h-3.5 bg-slate-800 rounded-full mx-auto mb-2" />
-
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-                    Apex Real Estate
-                  </span>
-                  <h3 className="text-base font-bold text-white">Daily Dashboard</h3>
+                <div className="flex items-center gap-2">
+                  <VentepulseLogo size="xs" theme="dark" />
                 </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/30">
-                  RJ
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">Live System</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
-                    <Plus className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-semibold text-white">Add Lead</div>
-                    <div className="text-[9px] text-slate-400">1-tap capture</div>
-                  </div>
+              <div className="grid grid-cols-2 gap-2 text-slate-100">
+                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <div className="text-[10px] text-slate-400">Total Leads</div>
+                  <div className="text-xl font-bold text-white">48</div>
                 </div>
+                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <div className="text-[10px] text-slate-400">Scheduled Today</div>
+                  <div className="text-xl font-bold text-emerald-400">7</div>
+                </div>
+              </div>
 
-                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-slate-800 text-teal-400">
-                    <FileSpreadsheet className="w-4 h-4" />
+              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400">Quick Actions</span>
+                  <span className="text-emerald-400 text-[9px]">1-Tap Launch</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-slate-100">
+                  <div className="p-2 bg-slate-900 border border-slate-800 rounded-lg flex items-center gap-2">
+                    <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                    <div>
+                      <div className="text-[11px] font-semibold text-white">Add Lead</div>
+                      <div className="text-[9px] text-slate-400">Manual Entry</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-[11px] font-semibold text-white">Import Leads</div>
-                    <div className="text-[9px] text-slate-400">CSV / Excel</div>
+                  <div className="p-2 bg-slate-900 border border-slate-800 rounded-lg flex items-center gap-2">
+                    <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                    <div>
+                      <div className="text-[11px] font-semibold text-white">Import Leads</div>
+                      <div className="text-[9px] text-slate-400">CSV / Excel</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -303,182 +306,99 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
           </div>
         </div>
+
       </section>
 
-      {/* ---------------- 4. HOW IT WORKS SECTION (WHITE BACKGROUND, CONNECTED PROCESS FLOW) ---------------- */}
+      {/* ---------------- 4. FEATURED SECTION #2: INDUSTRY SPECIFICITY (WHITE BACKGROUND) ---------------- */}
       <section className="relative bg-white py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-100 overflow-hidden">
-        
-        <AiSignalNetworkCanvas intensity="moderate" />
-
-        <div className="relative z-10 max-w-7xl mx-auto space-y-14">
-          <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Get started in <span className="text-emerald-600">6 simple steps</span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-600">
-              Streamlined workflow designed for maximum daily conversion.
-            </p>
-          </div>
-
-          {/* Connected Process Steps Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
-                1
-              </div>
-              <h4 className="text-base font-bold text-slate-900">Sign Up</h4>
-              <p className="text-xs sm:text-sm text-slate-600">Create your account in under 30 seconds.</p>
-            </div>
-
-            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
-                2
-              </div>
-              <h4 className="text-base font-bold text-slate-900">Import Leads</h4>
-              <p className="text-xs sm:text-sm text-slate-600">Upload Excel/CSV contacts or add leads manually.</p>
-            </div>
-
-            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
-                3
-              </div>
-              <h4 className="text-base font-bold text-slate-900">Check Daily Tasks</h4>
-              <p className="text-xs sm:text-sm text-slate-600">Review who needs a follow-up today.</p>
-            </div>
-
-            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
-                4
-              </div>
-              <h4 className="text-base font-bold text-slate-900">Send Message</h4>
-              <p className="text-xs sm:text-sm text-slate-600">Tap to launch pre-drafted WhatsApp messages.</p>
-            </div>
-
-            <div className="p-6 bg-[#F7F8FA] border border-slate-200/90 rounded-2xl space-y-3.5 text-left hover:border-emerald-500/30 transition-all duration-200">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
-                5
-              </div>
-              <h4 className="text-base font-bold text-slate-900">Record Progress</h4>
-              <p className="text-xs sm:text-sm text-slate-600">Log interaction notes and update lead stage.</p>
-            </div>
-
-            <div className="p-6 bg-emerald-950 text-white border border-emerald-500/30 rounded-2xl space-y-3.5 text-left shadow-md shadow-emerald-950/20">
-              <div className="w-9 h-9 rounded-xl bg-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center shadow-md shadow-emerald-400/20">
-                6
-              </div>
-              <h4 className="text-base font-bold text-white">Close Deals</h4>
-              <p className="text-xs sm:text-sm text-emerald-200 font-medium">Consistently convert leads into closed deals.</p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- 5. FEATURED SECTION #2: WHO IT'S FOR (SUBTLE NEUTRAL SURFACE #F7F8FA) ---------------- */}
-      <section className="relative bg-[#F7F8FA] py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-100/90 overflow-hidden">
         
         <AiSignalNetworkCanvas intensity="subtle" />
 
         <div className="relative z-10 max-w-7xl mx-auto space-y-14">
+          
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Built for <span className="text-emerald-600">high-ticket industries</span>
+              Designed for high-ticket <span className="text-emerald-600">industries</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-600">
-              Tailored follow-up solutions across leading sales verticals.
+              Tailored workflows built for high-value client relationships and long sales cycles.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/80 rounded-2xl space-y-3 hover:border-emerald-500/40 hover:bg-white transition-all duration-200">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <Building2 className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Real Estate Agents</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Manage property viewings and high-value buyers effortlessly.</p>
+              <h3 className="text-lg font-bold text-slate-900">Real Estate Brokers</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Track buyers, property inquiries, viewing schedules, and client negotiation milestones.
+              </p>
             </div>
 
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/80 rounded-2xl space-y-3 hover:border-emerald-500/40 hover:bg-white transition-all duration-200">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <Car className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-slate-900">Car Dealerships</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Track test drives, trade-ins, and automotive financing inquiries.</p>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Follow up on test drives, price quotes, financing inquiries, and trade-in valuations.
+              </p>
             </div>
 
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">High-Ticket Closers</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Never let high-value consultative prospects go cold.</p>
-            </div>
-
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/80 rounded-2xl space-y-3 hover:border-emerald-500/40 hover:bg-white transition-all duration-200">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-slate-900">Insurance Agents</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Maintain policy renewal reminders and quote follow-ups.</p>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Manage policy renewals, policy quotes, client check-ins, and claim status follow-ups.
+              </p>
             </div>
 
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
-                <Briefcase className="w-5 h-5" />
+            <div className="p-6 bg-[#F7F8FA] border border-slate-200/80 rounded-2xl space-y-3 hover:border-emerald-500/40 hover:bg-white transition-all duration-200">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Financial Advisors</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Stay top-of-mind with wealth management clients.</p>
-            </div>
-
-            <div className="p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm space-y-3.5 text-left hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
-                <Users className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">Sales Teams</h3>
-              <p className="text-xs sm:text-sm text-slate-600">Empower sales reps to close deals consistently every day.</p>
+              <h3 className="text-lg font-bold text-slate-900">High-Ticket Closers</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Stay connected with warm leads, proposal reviews, contract signoffs, and retainer updates.
+              </p>
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* ---------------- 6. CALL TO ACTION SECTION (WHITE BACKGROUND WITH DEEP SLATE CARD) ---------------- */}
-      <section className="bg-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="relative bg-slate-900 text-white rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl overflow-hidden border border-slate-800">
-          
-          {/* CTA Three.js AI Signal Network Canvas */}
-          <AiSignalNetworkCanvas intensity="cta" />
+      {/* ---------------- 5. FINAL CALL TO ACTION (DISTINCT ACCENT CTA CARD) ---------------- */}
+      <section className="relative bg-[#F7F8FA] py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+        
+        <AiSignalNetworkCanvas intensity="subtle" />
 
-          <div className="relative z-10 space-y-6">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Every missed follow-up is a <span className="text-emerald-400">missed opportunity</span>.
-            </h2>
-
-            <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto">
-              Start organizing your leads today and stay on top of every sales conversation.
-            </p>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="bg-slate-950 text-white rounded-[2.5rem] p-10 sm:p-14 text-center space-y-8 shadow-2xl border border-slate-800 relative overflow-hidden">
+            
+            <div className="space-y-4 max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                Ready to transform your <span className="text-emerald-400">lead follow-ups</span>?
+              </h2>
+              <p className="text-base sm:text-lg text-slate-300">
+                Join revenue teams using Ventepulse to convert more prospects into deals.
+              </p>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <button
                 type="button"
                 onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 cursor-pointer"
               >
                 Get Started
               </button>
-
-              <button
-                type="button"
-                onClick={() => onNavigateToAuth('login')}
-                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-4 cursor-pointer transition-colors"
-              >
-                Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
-              </button>
             </div>
-          </div>
 
+          </div>
         </div>
       </section>
 
@@ -491,15 +411,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             
             {/* About Column */}
             <div className="col-span-2 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center">
-                  <Zap className="w-4 h-4 fill-current text-slate-950" />
-                </div>
-                <span className="text-lg font-bold text-white">
-                  Ventepulse
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+              <VentepulseLogo size="md" theme="dark" />
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm pt-1">
                 Streamlined follow-up management for high-ticket sales professionals, agencies, and revenue teams.
               </p>
             </div>
@@ -517,7 +430,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
             {/* Company & Legal Column */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">Company & Legal</h4>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider">Company &amp; Legal</h4>
               <ul className="space-y-2 text-xs">
                 <li><button type="button" onClick={() => setActiveModal('about')} className="hover:text-white transition-colors cursor-pointer">About Us</button></li>
                 <li><button type="button" onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button></li>
@@ -575,40 +488,48 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="text-xs text-slate-600 leading-relaxed space-y-3 pt-1">
+            <div className="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
               {activeModal === 'about' && (
                 <>
                   <p>
-                    <strong>Ventepulse</strong> is a streamlined sales follow-up application designed to help sales professionals stay organized and never miss a high-ticket sales opportunity.
+                    Ventepulse is an intelligent follow-up management platform engineered specifically for high-ticket sales professionals, real estate brokers, car dealerships, and agency closer teams.
                   </p>
                   <p>
-                    Our mission is to eliminate lost deals by keeping prospect details, interaction notes, and timely reminders clear and actionable in one mobile-first workspace.
+                    Our platform automatically organizes prospect pipelines, schedules timely follow-up reminders, and integrates with WhatsApp to ensure no lead falls through the cracks.
                   </p>
                 </>
               )}
 
               {activeModal === 'contact' && (
-                <div className="space-y-3">
-                  <p className="text-slate-600 font-medium">Reach out to our support team:</p>
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 text-slate-800 text-xs">
+                <div className="space-y-4 py-2">
+                  <p className="text-slate-600">
+                    Need assistance or have questions about your Ventepulse workspace? Get in touch with our team directly:
+                  </p>
+                  
+                  <div className="space-y-3 bg-[#F7F8FA] p-4 rounded-2xl border border-slate-200/80">
                     <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Mail className="w-4 h-4" />
+                      </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Email</span>
-                        <span className="font-semibold text-slate-900">ventepulse@gmail.com</span>
+                        <div className="text-xs text-slate-400">Support Email</div>
+                        <div className="text-sm font-bold text-slate-900 font-mono">ventepulse@gmail.com</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 pt-2 border-t border-slate-200/60">
-                      <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
+
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <MapPin className="w-4 h-4" />
+                      </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Location</span>
-                        <span className="font-semibold text-slate-900">Lagos</span>
+                        <div className="text-xs text-slate-400">Headquarters Location</div>
+                        <div className="text-sm font-bold text-slate-900 font-medium">Lagos</div>
                       </div>
                     </div>
                   </div>
@@ -617,34 +538,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
 
               {activeModal === 'privacy' && (
                 <>
-                  <p><strong>Last Updated: August 2026</strong></p>
                   <p>
-                    Ventepulse respects your privacy. We collect minimal personal information (such as email address and business details) necessary to provide our service.
+                    At Ventepulse, we take your privacy and data security seriously. All lead records, contact logs, and business details are encrypted in transit and at rest using industry-standard security protocols.
                   </p>
                   <p>
-                    Your lead data and business records are protected by strict database Row Level Security (RLS) policies and will never be shared with third parties.
+                    We never sell or share your prospect database with third parties. Your data remains strictly accessible only by authorized members of your account.
                   </p>
                 </>
               )}
 
               {activeModal === 'terms' && (
                 <>
-                  <p><strong>Last Updated: August 2026</strong></p>
                   <p>
-                    By using Ventepulse, you agree to maintain accurate account information and use the platform in compliance with applicable laws and regulations.
+                    By accessing or using Ventepulse, you agree to comply with our acceptable use policies. Users are responsible for maintaining the confidentiality of their account credentials and ensuring lead data compliance with local privacy laws.
                   </p>
                   <p>
-                    You retain full ownership of all lead data imported or generated within your account.
+                    Ventepulse provides automated follow-up workflow assistance and analytics. Service availability is maintained to 99.9% uptime standards.
                   </p>
                 </>
               )}
             </div>
 
-            <div className="pt-2 text-right">
+            <div className="pt-3 border-t border-slate-100 text-right">
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="px-4 py-2 bg-slate-900 text-white font-semibold text-xs rounded-xl cursor-pointer"
+                className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl transition-all cursor-pointer"
               >
                 Close
               </button>

@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vp-wave-primary" x1="2" y1="36" x2="36" y2="2" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="45%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#34D399" />
+    </linearGradient>
+    <linearGradient id="vp-wave-secondary" x1="6" y1="30" x2="32" y2="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#6EE7B7" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="38" height="38" rx="8" fill="#022C22" />
+
+  <path d="M4 24C7.5 24 9.5 15 14 15C18.5 15 20.5 29 25 29C29.5 29 31.5 11 34 11" stroke="url(#vp-wave-primary)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M8 13.5C12.5 13.5 14.5 21.5 19 21.5C23.5 21.5 25.5 7 29.5 7" stroke="url(#vp-wave-secondary)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9" />
+
+  <circle cx="34" cy="11" r="3.2" fill="#34D399" />
+  <circle cx="34" cy="11" r="1.5" fill="#FFFFFF" />
+</svg>

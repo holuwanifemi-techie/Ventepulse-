@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { createBusinessProfile } from '../../lib/businessService';
 import { BusinessType } from '../../types/database';
+import { VentepulseLogo } from '../brand/VentepulseLogo';
 import { Building2, Briefcase, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
 
 const BUSINESS_TYPE_OPTIONS: BusinessType[] = [
@@ -66,16 +67,16 @@ export const BusinessSetupForm: React.FC<BusinessSetupFormProps> = ({ onComplete
       <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6">
         
         {/* Onboarding Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-inner mb-1">
-            <Building2 className="w-6 h-6" />
+        <div className="text-center space-y-3 flex flex-col items-center">
+          <VentepulseLogo size="lg" theme="dark" />
+          <div className="space-y-1 pt-1">
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              Setup Your Business
+            </h1>
+            <p className="text-xs text-slate-400">
+              Enter your business details to configure your dashboard.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            Setup Your Business
-          </h1>
-          <p className="text-xs text-slate-400">
-            Enter your business details to configure your dashboard.
-          </p>
         </div>
 
         {/* Error Alert */}

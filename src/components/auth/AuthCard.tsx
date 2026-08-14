@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
+import { VentepulseLogo } from '../brand/VentepulseLogo';
 import { ArrowLeft } from 'lucide-react';
 
 interface AuthCardProps {
@@ -33,11 +34,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({
       <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6">
         
         {/* Branding Header */}
-        <div className="text-center space-y-1.5">
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">
-            Ventepulse
-          </h1>
-          <p className="text-xs text-slate-400">
+        <div className="text-center space-y-2 flex flex-col items-center">
+          <VentepulseLogo size="lg" theme="dark" />
+          <p className="text-xs text-slate-400 pt-1">
             Never lose a lead. Never miss a follow-up.
           </p>
         </div>

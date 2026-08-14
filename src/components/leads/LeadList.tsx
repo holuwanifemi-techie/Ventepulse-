@@ -9,6 +9,7 @@ import { EditLeadModal } from './EditLeadModal';
 import { LeadDetailsModal } from './LeadDetailsModal';
 import { ImportLeadsModal } from './ImportLeadsModal';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
+import { VentepulseLogo } from '../brand/VentepulseLogo';
 import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
@@ -107,13 +108,13 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20">
       
-      {/* Mobile Top Header */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3.5 flex items-center justify-between">
-        <div>
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
+      {/* Top Header */}
+      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+        <div className="space-y-0.5">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block">
             {business.business_name}
           </span>
-          <h1 className="text-lg font-bold text-white tracking-tight">Ventepulse</h1>
+          <VentepulseLogo size="sm" theme="dark" />
         </div>
 
         <div className="flex items-center gap-2">
@@ -134,7 +135,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
             type="button"
             onClick={signOut}
             title="Sign Out"
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-all cursor-pointer flex items-center justify-center"
+            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-all cursor-pointer flex items-center justify-center"
           >
             <LogOut className="w-4 h-4" />
           </button>
