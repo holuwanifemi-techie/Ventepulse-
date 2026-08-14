@@ -12,6 +12,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Helper to ensure profile record exists in public.profiles table
+  const syncUserProfile = async (currentUser: User) => {
+    try {
+      const isAdminUser = currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+      await supabase.from('profiles').upsert(
+        {
+          id: currentUser.id,
+          email: currentUser.email || '',
+          full_name: currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User',
+          is_admin: isAdminUser,
+        },
+        { onConflict: 'id' }
+      );
+    } catch (e) {
+      console.warn('[AuthContext] Profile sync notice:', e);
+    }
+  };
+
   useEffect(() => {
     // 1. Fetch active session on initial mount
     const initializeAuth = async () => {
@@ -19,6 +37,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: { session: initialSession } } = await supabase.auth.getSession();
         setSession(initialSession);
         setUser(initialSession?.user ?? null);
+        if (initialSession?.user) {
+          syncUserProfile(initialSession.user);
+        }
       } catch (error) {
         console.error('Error fetching initial auth session:', error);
       } finally {
@@ -34,6 +55,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
+        if (currentSession?.user) {
+          syncUserProfile(currentSession.user);
+        }
       }
     );
 
@@ -68,17 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data?.user) {
-        // Direct profile insert with fail-safe fallback to ensure profile record exists for Admin Dashboard
-        try {
-          await supabase.from('profiles').insert({
-            id: data.user.id,
-            email: cleanEmail,
-            full_name: cleanEmail.split('@')[0],
-            created_at: new Date().toISOString(),
-          });
-        } catch (pErr) {
-          console.warn('[Profile Insert Notice]:', pErr);
-        }
+        await syncUserProfile(data.user);
       }
 
       // If user was created and session is returned, user is signed in
@@ -117,20 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         if (!signUpErr && signUpData?.user) {
-          try {
-            await supabase.from('profiles').upsert(
-              {
-                id: signUpData.user.id,
-                email: cleanEmail,
-                full_name: 'System Admin',
-                is_admin: true,
-                created_at: new Date().toISOString(),
-              },
-              { onConflict: 'id' }
-            );
-          } catch (e) {
-            console.warn('[Admin Profile Setup Notice]:', e);
-          }
+          await syncUserProfile(signUpData.user);
 
           if (signUpData.session) {
             setSession(signUpData.session);
@@ -144,6 +145,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (retry.data?.session) {
               setSession(retry.data.session);
               setUser(retry.data.session.user);
+              if (retry.data.session.user) {
+                await syncUserProfile(retry.data.session.user);
+              }
               return { error: null };
             }
           }
@@ -157,6 +161,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data?.session) {
         setSession(data.session);
         setUser(data.session.user);
+        if (data.session.user) {
+          await syncUserProfile(data.session.user);
+        }
       }
 
       return { error: null };
