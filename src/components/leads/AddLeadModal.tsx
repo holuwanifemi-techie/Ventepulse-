@@ -214,7 +214,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Sarah Jenkins"
+              placeholder="Full name"
               required
               className="w-full px-3.5 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
             />
@@ -231,7 +231,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+234 801 234 5678 or 08012345678"
+                placeholder="Phone or WhatsApp number"
                 required
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
@@ -251,7 +251,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="sarah@example.com"
+                  placeholder="Email address"
                   className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                 />
               </div>
@@ -297,10 +297,10 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
               </div>
             </div>
 
-            {/* Current Stage */}
+            {/* Stage */}
             <div className="space-y-1">
               <label className="block text-xs font-semibold text-slate-300">
-                Initial Stage
+                Stage
               </label>
               <div className="relative">
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
@@ -322,7 +322,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
           {/* Notes */}
           <div className="space-y-1">
             <label className="block text-xs font-semibold text-slate-300">
-              Initial Notes (Optional)
+              Notes
             </label>
             <div className="relative">
               <FileText className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
@@ -330,7 +330,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                placeholder="Interested in 4-bedroom property in downtown..."
+                placeholder="Briefly describe your interaction with the lead."
                 className="w-full pl-9 pr-3 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
             </div>
