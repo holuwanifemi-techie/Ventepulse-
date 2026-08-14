@@ -8,7 +8,11 @@ import { LeadList } from '../leads/LeadList';
 import { AdminDashboard } from '../admin/AdminDashboard';
 import { Loader2 } from 'lucide-react';
 
-export const OnboardingGuard: React.FC = () => {
+interface OnboardingGuardProps {
+  onNavigateToHome?: () => void;
+}
+
+export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({ onNavigateToHome }) => {
   const { user } = useAuth();
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,6 +65,7 @@ export const OnboardingGuard: React.FC = () => {
     <LeadList
       business={business}
       onOpenAdmin={() => setViewAdmin(true)}
+      onNavigateToHome={onNavigateToHome}
     />
   );
 };

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { AuthCard } from './AuthCard';
 import { LandingPage } from '../landing/LandingPage';
+import { OnboardingGuard } from '../onboarding/OnboardingGuard';
 import { Loader2 } from 'lucide-react';
 
-export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
   const [showAuthScreen, setShowAuthScreen] = useState<boolean>(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [activeView, setActiveView] = useState<'dashboard' | 'home'>('dashboard');
 
   if (loading) {
     return (
@@ -20,7 +22,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   }
 
-  // If user is not authenticated
+  // If user is NOT authenticated
   if (!user) {
     if (showAuthScreen) {
       return (
@@ -41,5 +43,23 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   }
 
-  return <>{children}</>;
+  // If user IS authenticated and viewing the public Home landing page
+  if (activeView === 'home') {
+    return (
+      <LandingPage
+        onNavigateToDashboard={() => setActiveView('dashboard')}
+        onNavigateToAuth={(mode) => {
+          setAuthMode(mode);
+          setShowAuthScreen(true);
+        }}
+      />
+    );
+  }
+
+  // Otherwise, render authenticated workspace
+  return (
+    <OnboardingGuard
+      onNavigateToHome={() => setActiveView('home')}
+    />
+  );
 };

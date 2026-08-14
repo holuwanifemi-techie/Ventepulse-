@@ -26,9 +26,10 @@ const STAGE_FILTERS: (LeadStage | 'All')[] = [
 interface LeadListProps {
   business: Business;
   onOpenAdmin?: () => void;
+  onNavigateToHome?: () => void;
 }
 
-export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => {
+export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNavigateToHome }) => {
   const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'leads' | 'settings'>('dashboard');
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -111,8 +112,16 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin }) => 
       
       {/* Top Dashboard Header */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between">
-        <div className="space-y-0.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block">
+        {/* Clickable Logo + Brand Area -> Navigates to Public Home Landing Page */}
+        <div 
+          onClick={onNavigateToHome}
+          tabIndex={0}
+          role="button"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigateToHome?.(); }}
+          className="space-y-0.5 cursor-pointer group focus:outline-none focus:ring-2 focus:ring-emerald-500/50 rounded-lg p-1 hover:bg-slate-800/60 transition-all"
+          title="Return to Home Page"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block group-hover:text-emerald-300 transition-colors">
             {business.business_name}
           </span>
           <VentepulseLogo size="sm" theme="dark" />

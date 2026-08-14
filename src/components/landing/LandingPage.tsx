@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { AiSignalNetworkCanvas } from './AiSignalNetworkCanvas';
 import { VentepulseLogo } from '../brand/VentepulseLogo';
 import {
@@ -23,14 +24,18 @@ import {
   Twitter,
   Linkedin,
   Facebook,
-  Instagram
+  Instagram,
+  ChevronRight,
+  LayoutDashboard
 } from 'lucide-react';
 
 interface LandingPageProps {
   onNavigateToAuth: (mode: 'login' | 'register') => void;
+  onNavigateToDashboard?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth, onNavigateToDashboard }) => {
+  const { user } = useAuth();
   const [activeModal, setActiveModal] = useState<'about' | 'contact' | 'privacy' | 'terms' | null>(null);
 
   return (
@@ -49,18 +54,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
           </div>
 
           {/* Header Action Buttons */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Authenticated Dashboard Quick Return Link */}
+            {user && onNavigateToDashboard && (
+              <button
+                type="button"
+                onClick={onNavigateToDashboard}
+                className="px-3.5 sm:px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5"
+                title="Go to User Dashboard"
+              >
+                <LayoutDashboard className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Dashboard</span>
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 hidden sm:inline" />
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => onNavigateToAuth('login')}
-              className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
             >
               Sign In
             </button>
             <button
               type="button"
               onClick={() => onNavigateToAuth('register')}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
+              className="px-4 sm:px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
             >
               Get Started
             </button>
@@ -90,13 +109,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-              <button
-                type="button"
-                onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
-              >
-                Get Started
-              </button>
+              {user && onNavigateToDashboard ? (
+                <button
+                  type="button"
+                  onClick={onNavigateToDashboard}
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Go to Dashboard</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onNavigateToAuth('register')}
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
+                >
+                  Get Started
+                </button>
+              )}
 
               <button
                 type="button"
@@ -389,13 +419,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth }) =>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <button
-                type="button"
-                onClick={() => onNavigateToAuth('register')}
-                className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 cursor-pointer"
-              >
-                Get Started
-              </button>
+              {user && onNavigateToDashboard ? (
+                <button
+                  type="button"
+                  onClick={onNavigateToDashboard}
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Go to Dashboard</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onNavigateToAuth('register')}
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 cursor-pointer"
+                >
+                  Get Started
+                </button>
+              )}
             </div>
 
           </div>
