@@ -12,7 +12,6 @@ import {
   MessageSquare,
   ChevronRight,
   Loader2,
-  RefreshCw,
   Plus,
   FileSpreadsheet
 } from 'lucide-react';
@@ -118,22 +117,10 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
       {/* Quick Action Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/60 p-4 rounded-3xl border border-slate-800">
         <div>
-          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">
-            {business.business_name}
-          </span>
           <h2 className="text-lg font-extrabold text-white">Daily Focus & Live Analytics</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={fetchMetrics}
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition-all cursor-pointer flex items-center justify-center"
-            title="Refresh Metrics"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
-          </button>
-
           <button
             type="button"
             onClick={() => setIsImportModalOpen(true)}
@@ -154,159 +141,202 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         </div>
       </div>
 
-      {/* ---------------- 1. PRIORITY SUMMARY CARDS (3 CARDS) ---------------- */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        
-        {/* Overdue Follow-ups */}
-        <div className="p-4 sm:p-5 bg-slate-900/90 border border-rose-900/50 rounded-2xl space-y-2 relative overflow-hidden shadow-xl">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-            <span>Overdue</span>
-            <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-rose-400">
-            {metrics?.overdueFollowups || 0}
+      {/* 1. TOP METRICS GRID (4 COMPACT CARDS) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 space-y-1">
+          <span className="text-xs text-slate-400 font-medium block">Total Leads</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white">{metrics?.totalLeads || 0}</span>
+            <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-800/50">Active Pipeline</span>
           </div>
         </div>
 
-        {/* Follow-ups Due Today */}
-        <div className="p-4 sm:p-5 bg-slate-900/90 border border-amber-900/50 rounded-2xl space-y-2 relative overflow-hidden shadow-xl">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-            <span>Due Today</span>
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-amber-400">
-            {metrics?.followupsDueToday || 0}
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 space-y-1">
+          <span className="text-xs text-slate-400 font-medium block">Follow-ups Today</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-emerald-400">{metrics?.followupsDueToday || 0}</span>
+            <span className="text-[10px] text-amber-400 font-semibold bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-800/50">Action Needed</span>
           </div>
         </div>
 
-        {/* Completed This Week */}
-        <div className="p-4 sm:p-5 bg-slate-900/90 border border-emerald-900/50 rounded-2xl space-y-2 relative overflow-hidden shadow-xl">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-            <span>Completed This Week</span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
-            {metrics?.completedThisWeek || 0}
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 space-y-1">
+          <span className="text-xs text-slate-400 font-medium block">Overdue Reminders</span>
+          <div className="flex items-baseline justify-between">
+            <span className={`text-2xl font-extrabold ${(metrics?.overdueFollowups || 0) > 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+              {metrics?.overdueFollowups || 0}
+            </span>
+            <span className="text-[10px] text-rose-400 font-semibold bg-rose-950/60 px-2 py-0.5 rounded-md border border-rose-800/50">Urgent</span>
           </div>
         </div>
 
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 space-y-1">
+          <span className="text-xs text-slate-400 font-medium block">Deals Closed</span>
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-white">{metrics?.closedDeals || 0}</span>
+            <span className="text-[10px] text-purple-400 font-semibold bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-800/50">Closed Won</span>
+          </div>
+        </div>
       </div>
 
-      {/* ---------------- 2. TODAY'S PRIORITY (ACTION-FOCUSED LIST) ---------------- */}
-      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-5 shadow-xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-400" /> Today's Priority
-            </h3>
-            <p className="text-xs text-slate-400">Sorted by urgency (Overdue → Due Today → Upcoming)</p>
+      {/* 2. TODAY'S ACTION PRIORITIES (HERO FOCUS LIST) */}
+      <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-base font-bold text-white">Priority Follow-up Actions</h3>
           </div>
-
-          <button
-            type="button"
-            onClick={onNavigateToLeads}
-            className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors cursor-pointer"
-          >
-            <span>View All Leads</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          <span className="text-xs font-semibold text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">
+            {metrics?.priorityItems.length || 0} Tasks Queued
+          </span>
         </div>
 
-        {metrics?.priorityItems.length === 0 ? (
-          <div className="p-8 text-center bg-slate-950/60 rounded-2xl border border-slate-800 space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-            <div className="text-sm font-bold text-white">All Caught Up!</div>
-            <p className="text-xs text-slate-400">No overdue or pending follow-ups required right now.</p>
+        {!metrics?.priorityItems.length ? (
+          <div className="text-center py-10 space-y-3 bg-slate-950/40 rounded-2xl border border-slate-800/60 p-6">
+            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto opacity-90" />
+            <div className="space-y-1">
+              <h4 className="text-sm font-bold text-white">All Caught Up!</h4>
+              <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                No urgent or scheduled follow-ups remaining for today. Great job staying responsive.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onNavigateToLeads}
+              className="py-2 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-all cursor-pointer inline-flex items-center gap-1.5"
+            >
+              <span>View All Leads Workspace</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         ) : (
           <div className="space-y-3">
-            {metrics?.priorityItems.map((item) => (
+            {metrics.priorityItems.map((item) => (
               <div
                 key={item.id}
-                className="p-4 bg-slate-950/70 border border-slate-800 hover:border-emerald-500/30 rounded-2xl transition-all space-y-3"
+                className="bg-slate-950/70 hover:bg-slate-950 border border-slate-800/80 hover:border-emerald-500/40 rounded-2xl p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  {/* Lead Info */}
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm shrink-0">
+                    {item.lead.full_name.charAt(0).toUpperCase()}
+                  </div>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white text-sm">{item.lead.full_name}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase border ${getStatusBadge(item.status)}`}>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                        {item.lead.full_name}
+                      </h4>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-md border ${getStatusBadge(item.status)}`}>
                         {item.status}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] border ${getStageBadge(item.lead.stage)}`}>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-md border ${getStageBadge(item.lead.stage)}`}>
                         {item.lead.stage}
                       </span>
                     </div>
 
-                    <div className="text-xs text-slate-400 flex flex-wrap items-center gap-x-4 gap-y-1">
-                      <span>Phone: <strong className="text-slate-200 font-mono">{item.lead.whatsapp_number}</strong></span>
-                      <span>Follow-up: <strong className="text-slate-200">{formatDate(item.followupDate)}</strong></span>
-                      <span>Last Interaction: <strong className="text-slate-300">{item.lastInteraction}</strong></span>
+                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                      <span className="font-mono text-slate-300">{item.lead.whatsapp_number}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-slate-500" />
+                        {formatDate(item.followupDate)}
+                      </span>
                     </div>
-                  </div>
 
-                  {/* Open WhatsApp Trigger Button */}
+                    {item.lead.notes && (
+                      <p className="text-xs text-slate-400 line-clamp-1 italic">
+                        "{item.lead.notes}"
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/80 shrink-0">
                   <button
                     type="button"
                     onClick={() => setSelectedLeadForWhatsApp(item.lead)}
-                    className="py-2 px-4 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0"
+                    className="flex-1 sm:flex-initial py-2 px-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Open WhatsApp</span>
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
                   </button>
                 </div>
-
-                {item.lead.notes && (
-                  <p className="text-xs text-slate-400 italic bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
-                    "{item.lead.notes}"
-                  </p>
-                )}
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* ---------------- 3. UPCOMING FOLLOW-UPS (7 DAYS) ---------------- */}
-      <div className="p-5 sm:p-6 bg-slate-900/80 border border-slate-800 rounded-3xl space-y-4 shadow-xl">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-emerald-400" /> Upcoming Follow-ups (7 Days)
-        </h3>
+      {/* 3. UPCOMING SCHEDULE & QUICK WORKSPACE ACCESS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        
+        {/* Upcoming This Week */}
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-emerald-400" />
+              <span>Upcoming This Week</span>
+            </h3>
+            <span className="text-xs text-slate-400">{metrics?.upcomingItems.length || 0} scheduled</span>
+          </div>
 
-        {metrics?.upcomingItems.length === 0 ? (
-          <p className="text-xs text-slate-500 py-6 text-center">No upcoming follow-ups scheduled for the next 7 days.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {metrics?.upcomingItems.map((item) => (
-              <div key={item.id} className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-bold text-white">{item.lead.full_name}</div>
-                  <div className="text-[10px] text-slate-400">Scheduled: {formatDate(item.followupDate)}</div>
+          {!metrics?.upcomingItems.length ? (
+            <p className="text-xs text-slate-400 py-4 text-center">No upcoming follow-ups scheduled for later this week.</p>
+          ) : (
+            <div className="space-y-2.5">
+              {metrics.upcomingItems.slice(0, 4).map((item) => (
+                <div
+                  key={item.id}
+                  className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl flex items-center justify-between text-xs"
+                >
+                  <div>
+                    <div className="font-semibold text-slate-200">{item.lead.full_name}</div>
+                    <div className="text-[10px] text-slate-400">{item.lead.stage}</div>
+                  </div>
+                  <span className="text-[11px] font-medium text-emerald-400 font-mono">
+                    {formatDate(item.followupDate)}
+                  </span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] border ${getStageBadge(item.stage)}`}>
-                  {item.stage}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Workspace Switcher */}
+        <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-5 space-y-4 flex flex-col justify-between">
+          <div className="space-y-2">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <span>Pipeline & Lead Workspace</span>
+            </h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Filter leads by stage, search contact numbers, import bulk databases, or update notes anytime.
+            </p>
           </div>
-        )}
+
+          <div className="pt-3">
+            <button
+              type="button"
+              onClick={onNavigateToLeads}
+              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg"
+            >
+              <span>Open Full Leads Workspace</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
       </div>
 
-      {/* AI Message Preview Modal Trigger */}
-      <AIMessagePreviewModal
-        lead={selectedLeadForWhatsApp}
-        business={business}
-        isOpen={!!selectedLeadForWhatsApp}
-        onClose={() => setSelectedLeadForWhatsApp(null)}
-      />
+      {/* AI WHATSAPP MESSAGE PREVIEW MODAL */}
+      {selectedLeadForWhatsApp && (
+        <AIMessagePreviewModal
+          lead={selectedLeadForWhatsApp}
+          business={business}
+          isOpen={!!selectedLeadForWhatsApp}
+          onClose={() => setSelectedLeadForWhatsApp(null)}
+        />
+      )}
 
-      {/* Import Leads Modal Trigger */}
+      {/* IMPORT LEADS MODAL */}
       <ImportLeadsModal
         businessId={business.id}
         isOpen={isImportModalOpen}
