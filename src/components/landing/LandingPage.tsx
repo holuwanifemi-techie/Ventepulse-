@@ -24,9 +24,7 @@ import {
   Twitter,
   Linkedin,
   Facebook,
-  Instagram,
-  ChevronRight,
-  LayoutDashboard
+  Instagram
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -55,34 +53,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth, onNa
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Authenticated Dashboard Quick Return Link */}
-            {user && onNavigateToDashboard && (
+            {/* Authenticated Dashboard Link: Shows ONLY Dashboard (no Sign In / Get Started) */}
+            {user && onNavigateToDashboard ? (
               <button
                 type="button"
                 onClick={onNavigateToDashboard}
-                className="px-3.5 sm:px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm hover:shadow cursor-pointer"
                 title="Go to User Dashboard"
               >
-                <LayoutDashboard className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Dashboard</span>
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 hidden sm:inline" />
+                Dashboard
               </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onNavigateToAuth('login')}
+                  className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigateToAuth('register')}
+                  className="px-4 sm:px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
+                >
+                  Get Started
+                </button>
+              </>
             )}
-
-            <button
-              type="button"
-              onClick={() => onNavigateToAuth('login')}
-              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigateToAuth('register')}
-              className="px-4 sm:px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
-            >
-              Get Started
-            </button>
           </div>
 
         </div>
@@ -113,10 +111,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth, onNa
                 <button
                   type="button"
                   onClick={onNavigateToDashboard}
-                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
                 >
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span>Go to Dashboard</span>
+                  Go to Dashboard
                 </button>
               ) : (
                 <button
@@ -128,13 +125,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth, onNa
                 </button>
               )}
 
-              <button
-                type="button"
-                onClick={() => onNavigateToAuth('login')}
-                className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-4 cursor-pointer transition-colors"
-              >
-                Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
-              </button>
+              {!user && (
+                <button
+                  type="button"
+                  onClick={() => onNavigateToAuth('login')}
+                  className="text-sm font-semibold text-slate-300 hover:text-white py-2.5 px-4 cursor-pointer transition-colors"
+                >
+                  Already have an account? <span className="text-emerald-400 font-bold underline underline-offset-4">Login</span>
+                </button>
+              )}
             </div>
 
           </div>
@@ -423,10 +422,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToAuth, onNa
                 <button
                   type="button"
                   onClick={onNavigateToDashboard}
-                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
                 >
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span>Go to Dashboard</span>
+                  Go to Dashboard
                 </button>
               ) : (
                 <button
