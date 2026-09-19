@@ -79,3 +79,45 @@ export interface AdminPlatformStats {
     leads_count: number;
   }>;
 }
+
+
+export type SubscriptionPlan = 'free' | 'pro_100' | 'pro_500' | 'admin';
+export type SubscriptionStatus = 'active' | 'expired' | 'canceled';
+
+export interface Subscription {
+  id: string;
+  user_id: string;
+  plan: 'free' | 'pro_100' | 'pro_500';
+  status: SubscriptionStatus;
+  current_period_start: string;
+  current_period_end?: string | null;
+  lead_limit: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Payment {
+  id: string;
+  user_id: string;
+  plan: 'pro_100' | 'pro_500';
+  amount: number;
+  currency: string;
+  provider: string;
+  reference: string;
+  status: 'success' | 'pending' | 'failed';
+  raw_metadata?: Record<string, any>;
+  paid_at: string;
+  created_at: string;
+}
+
+export interface UserEffectivePlan {
+  role: 'admin' | 'owner' | 'user';
+  plan: SubscriptionPlan;
+  plan_name: string;
+  status: SubscriptionStatus;
+  lead_limit: number;
+  current_leads: number;
+  is_pro: boolean;
+  is_admin: boolean;
+  expires_at?: string | null;
+}

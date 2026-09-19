@@ -10,8 +10,9 @@ import { LeadDetailsModal } from './LeadDetailsModal';
 import { ImportLeadsModal } from './ImportLeadsModal';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
 import { UserSettingsView } from '../settings/UserSettingsView';
+import { AutomationsView } from '../automations/AutomationsView';
 import { VentepulseLogo } from '../brand/VentepulseLogo';
-import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet, Settings } from 'lucide-react';
+import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet, Settings, Zap } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
   'All',
@@ -31,7 +32,7 @@ interface LeadListProps {
 
 export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNavigateToHome }) => {
   const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'leads' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'leads' | 'automations' | 'settings'>('dashboard');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -169,31 +170,44 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6">
         
         {/* Workspace View Switcher Tabs (Balanced 2-column layout) */}
-        <div className="grid grid-cols-2 p-1.5 bg-slate-900 border border-slate-800 rounded-2xl">
+        <div className="grid grid-cols-3 p-1.5 bg-slate-900 border border-slate-800 rounded-2xl">
           <button
             type="button"
             onClick={() => setActiveTab('dashboard')}
-            className={`py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-2.5 px-2 sm:px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
               activeTab === 'dashboard'
                 ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <LayoutDashboard className="w-4 h-4" />
-            <span>Dashboard & Priorities</span>
+            <LayoutDashboard className="w-4 h-4 shrink-0" />
+            <span className="truncate">Dashboard</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('leads')}
-            className={`py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`py-2.5 px-2 sm:px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
               activeTab === 'leads'
                 ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <ListFilter className="w-4 h-4" />
-            <span>Leads Workspace ({leads.length})</span>
+            <ListFilter className="w-4 h-4 shrink-0" />
+            <span className="truncate">Leads ({leads.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('automations')}
+            className={`py-2.5 px-2 sm:px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
+              activeTab === 'automations'
+                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Zap className="w-4 h-4 shrink-0" />
+            <span className="truncate">Automations</span>
           </button>
         </div>
 
@@ -201,6 +215,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
         {activeTab === 'dashboard' && (
           <UserDashboardView
             userId={user?.id || ''}
+            userEmail={user?.email || ''}
             business={business}
             onNavigateToLeads={() => setActiveTab('leads')}
             onOpenAddLead={() => setIsAddModalOpen(true)}
@@ -351,7 +366,12 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
           </div>
         )}
 
-        {/* Tab 3: User Settings View */}
+        {/* Tab 3: Automations View */}
+        {activeTab === 'automations' && (
+          <AutomationsView />
+        )}
+
+        {/* Tab 4: User Settings View */}
         {activeTab === 'settings' && (
           <UserSettingsView />
         )}

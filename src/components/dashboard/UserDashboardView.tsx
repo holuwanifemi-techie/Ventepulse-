@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardMetrics, DashboardMetrics } from '../../lib/dashboardService';
-import { Lead, Business } from '../../types/database';
+import { Lead, Business, UserEffectivePlan } from '../../types/database';
 import { supabase } from '../../lib/supabase';
 import { AIMessagePreviewModal } from '../leads/AIMessagePreviewModal';
 import { ImportLeadsModal } from '../leads/ImportLeadsModal';
+import { PricingUpgradeModal } from '../subscription/PricingUpgradeModal';
+import { getUserPlan } from '../../lib/subscriptionService';
 import {
   AlertTriangle,
   Clock,
@@ -13,11 +15,16 @@ import {
   ChevronRight,
   Loader2,
   Plus,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Zap,
+  Crown,
+  Shield,
+  TrendingUp,
 } from 'lucide-react';
 
 interface UserDashboardViewProps {
   userId: string;
+  userEmail: string;
   business: Business;
   onNavigateToLeads: () => void;
   onOpenAddLead: () => void;
@@ -25,6 +32,7 @@ interface UserDashboardViewProps {
 
 export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
   userId,
+  userEmail,
   business,
   onNavigateToLeads,
   onOpenAddLead,
@@ -33,6 +41,8 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
   const [loading, setLoading] = useState(true);
   const [selectedLeadForWhatsApp, setSelectedLeadForWhatsApp] = useState<Lead | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [userPlan, setUserPlan] = useState<UserEffectivePlan | null>(null);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
 
   const fetchMetrics = async () => {
     setLoading(true);
@@ -43,6 +53,10 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
 
   useEffect(() => {
     fetchMetrics();
+    // Fetch subscription plan for the plan status card
+    getUserPlan(userId, userEmail).then(({ data }) => {
+      if (data) setUserPlan(data);
+    });
 
     // Attach Realtime listener for live analytics auto-updates
     const channel = supabase
@@ -140,6 +154,81 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* PLAN STATUS CARD */}
+      {userPlan && (() => {
+        const isAdmin = userPlan.plan === 'admin';
+        const isPro = userPlan.plan === 'pro_100' || userPlan.plan === 'pro_500';
+        const isExpired = userPlan.plan === 'pro_expired';
+        const isFree = userPlan.plan === 'free';
+        const usedLeads = userPlan.current_leads;
+        const maxLeads = userPlan.lead_limit;
+        const pct = maxLeads > 0 ? Math.min((usedLeads / maxLeads) * 100, 100) : 0;
+        const showUpgrade = isFree || isExpired;
+
+        const planLabel = isAdmin
+          ? 'Administrator'
+          : isPro
+          ? userPlan.plan === 'pro_100' ? 'Pro 100' : 'Pro 500'
+          : isExpired
+          ? 'Pro (Expired)'
+          : 'Free Plan';
+
+        const planIcon = isAdmin ? Shield : isPro ? Crown : isExpired ? Zap : TrendingUp;
+        const PlanIcon = planIcon;
+        const barColor = pct >= 90 ? 'bg-rose-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500';
+        const iconColor = isAdmin ? 'text-emerald-400' : isPro ? 'text-amber-400' : isExpired ? 'text-rose-400' : 'text-slate-400';
+        const badgeColor = isAdmin
+          ? 'bg-emerald-950/60 text-emerald-400 border-emerald-700/50'
+          : isPro
+          ? 'bg-amber-950/60 text-amber-400 border-amber-700/50'
+          : isExpired
+          ? 'bg-rose-950/60 text-rose-400 border-rose-700/50'
+          : 'bg-slate-800/80 text-slate-300 border-slate-700';
+
+        return (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-slate-900/60 border border-slate-800 rounded-2xl p-3.5 px-4">
+            <div className="flex items-center gap-2.5 flex-1 min-w-0">
+              <div className={`w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center shrink-0`}>
+                <PlanIcon className={`w-4 h-4 ${iconColor}`} />
+              </div>
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeColor}`}>
+                    {planLabel}
+                  </span>
+                  {isExpired && (
+                    <span className="text-[10px] text-rose-400">Subscription ended — upgrade to add leads</span>
+                  )}
+                </div>
+                {!isAdmin && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${barColor}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                      {usedLeads}/{maxLeads} leads
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            {showUpgrade && (
+              <button
+                type="button"
+                onClick={() => setIsPricingModalOpen(true)}
+                className="py-2 px-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all cursor-pointer shrink-0"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                Upgrade Plan
+              </button>
+            )}
+          </div>
+        );
+      })()}
 
       {/* 1. TOP METRICS GRID (4 COMPACT CARDS) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -347,6 +436,15 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         onSuccess={fetchMetrics}
+      />
+
+      {/* PRICING UPGRADE MODAL */}
+      <PricingUpgradeModal
+        isOpen={isPricingModalOpen}
+        onClose={() => setIsPricingModalOpen(false)}
+        userId={userId}
+        userEmail={userEmail}
+        currentPlan={userPlan?.plan}
       />
 
     </div>
