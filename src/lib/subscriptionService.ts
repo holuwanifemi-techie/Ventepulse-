@@ -3,19 +3,28 @@ import { checkIsAdmin } from './adminService';
 import { UserEffectivePlan, SubscriptionPlan } from '../types/database';
 
 export const BACHS_CHECKOUT_LINKS = {
-  pro_100: 'https://checkout.bachs.io/pay/pl_c9fd4cdff83f',
-  pro_500: 'https://checkout.bachs.io/pay/pl_781fc6f2fc90',
+  NGN: {
+    pro_100: 'https://checkout.bachs.io/pay/pl_c9fd4cdff83f',
+    pro_500: 'https://checkout.bachs.io/pay/pl_781fc6f2fc90',
+  },
+  USD: {
+    pro_100: 'https://checkout.bachs.io/pay/pl_6da4225710b4',
+    pro_500: 'https://checkout.bachs.io/pay/pl_8c8d073b79ff',
+  },
 } as const;
 
+export type CheckoutCurrency = 'NGN' | 'USD';
+
 /**
- * Generate official Bachs checkout URL with customer attribution.
+ * Generate official Bachs checkout URL with customer attribution and currency.
  */
 export function getBachsCheckoutUrl(
   plan: 'pro_100' | 'pro_500',
   userEmail: string,
-  userId: string
+  userId: string,
+  currency: CheckoutCurrency = 'NGN'
 ): string {
-  const baseUrl = BACHS_CHECKOUT_LINKS[plan];
+  const baseUrl = BACHS_CHECKOUT_LINKS[currency][plan];
   const params = new URLSearchParams();
   if (userEmail) params.append('email', userEmail.trim());
   if (userId) params.append('client_reference_id', userId);
@@ -77,6 +86,40 @@ export async function getUserPlan(userId: string, email?: string): Promise<{ dat
     const now = new Date();
 
     if (sub) {
+      if (sub.plan === 'owner') {
+        return {
+          data: {
+            role: 'owner',
+            plan: 'owner',
+            plan_name: 'Owner Access',
+            status: 'active',
+            lead_limit: 999999,
+            current_leads: leadCount,
+            is_pro: true,
+            is_admin: true,
+            expires_at: null,
+          },
+          error: null,
+        };
+      }
+
+      if (sub.plan === 'admin') {
+        return {
+          data: {
+            role: 'admin',
+            plan: 'admin',
+            plan_name: 'Administrator Access',
+            status: 'active',
+            lead_limit: 999999,
+            current_leads: leadCount,
+            is_pro: true,
+            is_admin: true,
+            expires_at: null,
+          },
+          error: null,
+        };
+      }
+
       const isExpired = sub.current_period_end ? new Date(sub.current_period_end) <= now : false;
 
       if (sub.plan === 'pro_500' && sub.status === 'active' && !isExpired) {
@@ -176,7 +219,7 @@ export async function checkCanCreateLead(userId: string, email?: string): Promis
   isPro: boolean;
 }> {
   const { data } = await getUserPlan(userId, email);
-  if (data.is_admin) {
+  if (data.is_admin || data.role === 'owner' || data.plan === 'owner' || data.plan === 'admin') {
     return {
       allowed: true,
       currentCount: data.current_leads,
@@ -206,6 +249,7 @@ export async function activateSubscriptionFromPayment(
   plan: 'pro_100' | 'pro_500',
   reference: string,
   amount: number,
+  currency: 'NGN' | 'USD' = 'NGN',
   metadata?: Record<string, any>
 ): Promise<{ success: boolean; error: Error | null }> {
   try {
@@ -214,6 +258,7 @@ export async function activateSubscriptionFromPayment(
       p_plan: plan,
       p_reference: reference,
       p_amount: amount,
+      p_currency: currency,
       p_metadata: metadata || {},
     });
 

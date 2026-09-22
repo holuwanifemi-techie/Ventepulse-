@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { createLead } from '../../lib/leadService';
+import { checkCanCreateLead } from '../../lib/subscriptionService';
+import { PricingUpgradeModal } from '../subscription/PricingUpgradeModal';
 import { LeadStage } from '../../types/database';
-import { X, UserPlus, Phone, Mail, Tag, Layers, FileText, Calendar, Loader2, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
+import { X, UserPlus, Phone, Mail, Tag, Layers, FileText, Calendar, Loader2, AlertCircle, RotateCcw, Sparkles, Zap } from 'lucide-react';
 
 const STAGE_OPTIONS: LeadStage[] = [
   'New',
@@ -46,8 +48,26 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [hasRestoredDraft, setHasRestoredDraft] = useState(false);
+  const [isLimitExceeded, setIsLimitExceeded] = useState(false);
+  const [limitInfo, setLimitInfo] = useState<{ planName: string; limit: number; currentCount: number } | null>(null);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
 
   const getDraftKey = () => (user ? `ventepulse_lead_draft_${user.id}` : null);
+
+  // Check lead limit when modal opens
+  useEffect(() => {
+    if (isOpen && user) {
+      checkCanCreateLead(user.id, user.email).then((res) => {
+        if (!res.allowed) {
+          setIsLimitExceeded(true);
+          setLimitInfo({ planName: res.planName, limit: res.limit, currentCount: res.currentCount });
+        } else {
+          setIsLimitExceeded(false);
+          setLimitInfo(null);
+        }
+      });
+    }
+  }, [isOpen, user]);
 
   // Restore draft when modal opens
   useEffect(() => {
@@ -120,6 +140,15 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
       return;
     }
 
+    // Pre-check lead creation limit
+    const check = await checkCanCreateLead(user.id, user.email);
+    if (!check.allowed) {
+      setIsLimitExceeded(true);
+      setLimitInfo({ planName: check.planName, limit: check.limit, currentCount: check.currentCount });
+      setErrorMessage(`Lead limit reached: You have ${check.currentCount} of ${check.limit} leads on your ${check.planName} plan. Upgrade to add more.`);
+      return;
+    }
+
     setLoading(true);
     const { error } = await createLead({
       user_id: user.id,
@@ -135,6 +164,9 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
     setLoading(false);
 
     if (error) {
+      if (error.message.includes('LEAD_LIMIT_EXCEEDED')) {
+        setIsLimitExceeded(true);
+      }
       setErrorMessage(error.message);
     } else {
       // Clear draft on successful database insertion
@@ -196,8 +228,33 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
           </div>
         )}
 
+        {/* Limit Exceeded Banner */}
+        {isLimitExceeded && (
+          <div className="p-4 bg-amber-950/40 border border-amber-500/40 rounded-2xl space-y-3">
+            <div className="flex items-start gap-2.5">
+              <Zap className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-sm font-bold text-amber-300">Lead Limit Reached</h4>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  {limitInfo
+                    ? `You have reached the maximum limit of ${limitInfo.limit} leads for your ${limitInfo.planName} plan. Upgrade to unlock more leads.`
+                    : 'You have reached the lead creation limit for your plan. Please upgrade to add more leads.'}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsPricingModalOpen(true)}
+              className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Zap className="w-4 h-4" />
+              <span>Upgrade Plan Now</span>
+            </button>
+          </div>
+        )}
+
         {/* Error Alert */}
-        {errorMessage && (
+        {errorMessage && !isLimitExceeded && (
           <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{errorMessage}</span>
@@ -355,6 +412,25 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
           </div>
         </form>
       </div>
+
+      <PricingUpgradeModal
+        isOpen={isPricingModalOpen}
+        onClose={() => {
+          setIsPricingModalOpen(false);
+          if (user) {
+            checkCanCreateLead(user.id, user.email).then((res) => {
+              if (res.allowed) {
+                setIsLimitExceeded(false);
+                setLimitInfo(null);
+                setErrorMessage(null);
+              }
+            });
+          }
+        }}
+        userId={user?.id || ''}
+        userEmail={user?.email || ''}
+        currentPlan={limitInfo?.planName}
+      />
     </div>
   );
 };

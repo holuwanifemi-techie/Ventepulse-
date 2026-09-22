@@ -6,7 +6,7 @@
 CREATE TABLE IF NOT EXISTS public.subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES public.profiles(id) ON DELETE CASCADE,
-  plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro_100', 'pro_500')),
+  plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro_100', 'pro_500', 'admin', 'owner')),
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'canceled')),
   current_period_start TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
   current_period_end TIMESTAMPTZ,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS public.payments (
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   plan TEXT NOT NULL CHECK (plan IN ('pro_100', 'pro_500')),
   amount NUMERIC(12, 2) NOT NULL,
-  currency TEXT NOT NULL DEFAULT 'NGN',
+  currency TEXT NOT NULL DEFAULT 'NGN' CHECK (currency IN ('NGN', 'USD')),
   provider TEXT NOT NULL DEFAULT 'bachs',
   reference TEXT NOT NULL UNIQUE,
   status TEXT NOT NULL DEFAULT 'success' CHECK (status IN ('success', 'pending', 'failed')),
@@ -90,14 +90,20 @@ CREATE OR REPLACE FUNCTION public.get_effective_user_plan(target_user_id UUID)
 RETURNS JSONB AS $$
 DECLARE
   v_is_admin BOOLEAN := false;
+  v_user_email TEXT;
   v_sub RECORD;
   v_current_leads INTEGER := 0;
   v_now TIMESTAMPTZ := timezone('utc'::text, now());
 BEGIN
-  -- 1. Check if user is Administrator or Master Owner
-  SELECT public.is_admin(target_user_id) INTO v_is_admin;
+  -- 1. Check if user is Administrator or Master Owner via profile or helper
+  SELECT email, (is_admin = true OR LOWER(email) = 'ventepulse@gmail.com')
+  INTO v_user_email, v_is_admin
+  FROM public.profiles
+  WHERE id = target_user_id;
+
+  SELECT COUNT(*) INTO v_current_leads FROM public.leads WHERE user_id = target_user_id;
+
   IF v_is_admin THEN
-    SELECT COUNT(*) INTO v_current_leads FROM public.leads WHERE user_id = target_user_id;
     RETURN jsonb_build_object(
       'role', 'admin',
       'plan', 'admin',
@@ -117,11 +123,35 @@ BEGIN
   FROM public.subscriptions
   WHERE user_id = target_user_id;
 
-  SELECT COUNT(*) INTO v_current_leads FROM public.leads WHERE user_id = target_user_id;
-
   IF FOUND THEN
+    -- Owner Plan
+    IF v_sub.plan = 'owner' THEN
+      RETURN jsonb_build_object(
+        'role', 'owner',
+        'plan', 'owner',
+        'plan_name', 'Owner Access',
+        'status', 'active',
+        'lead_limit', 999999,
+        'current_leads', v_current_leads,
+        'is_pro', true,
+        'is_admin', true,
+        'expires_at', null
+      );
+    -- Admin Plan in Subscriptions
+    ELSIF v_sub.plan = 'admin' THEN
+      RETURN jsonb_build_object(
+        'role', 'admin',
+        'plan', 'admin',
+        'plan_name', 'Administrator Access',
+        'status', 'active',
+        'lead_limit', 999999,
+        'current_leads', v_current_leads,
+        'is_pro', true,
+        'is_admin', true,
+        'expires_at', null
+      );
     -- Check if Pro 500 is active and not expired
-    IF v_sub.plan = 'pro_500' AND v_sub.status = 'active' AND (v_sub.current_period_end IS NULL OR v_sub.current_period_end > v_now) THEN
+    ELSIF v_sub.plan = 'pro_500' AND v_sub.status = 'active' AND (v_sub.current_period_end IS NULL OR v_sub.current_period_end > v_now) THEN
       RETURN jsonb_build_object(
         'role', 'user',
         'plan', 'pro_500',
@@ -193,7 +223,11 @@ DECLARE
   v_now TIMESTAMPTZ := timezone('utc'::text, now());
 BEGIN
   -- 1. If Administrator / Owner, bypass limit completely (unlimited leads)
-  SELECT public.is_admin(NEW.user_id) INTO v_is_admin;
+  SELECT (is_admin = true OR LOWER(email) = 'ventepulse@gmail.com')
+  INTO v_is_admin
+  FROM public.profiles
+  WHERE id = NEW.user_id;
+
   IF v_is_admin THEN
     RETURN NEW;
   END IF;
@@ -205,11 +239,11 @@ BEGIN
   WHERE user_id = NEW.user_id;
 
   IF FOUND THEN
-    -- Active Pro 500
-    IF v_sub.plan = 'pro_500' AND v_sub.status = 'active' AND (v_sub.current_period_end IS NULL OR v_sub.current_period_end > v_now) THEN
+    IF v_sub.plan IN ('owner', 'admin') THEN
+      RETURN NEW;
+    ELSIF v_sub.plan = 'pro_500' AND v_sub.status = 'active' AND (v_sub.current_period_end IS NULL OR v_sub.current_period_end > v_now) THEN
       v_effective_limit := 500;
       v_plan_name := 'VentePulse Pro 500';
-    -- Active Pro 100
     ELSIF v_sub.plan = 'pro_100' AND v_sub.status = 'active' AND (v_sub.current_period_end IS NULL OR v_sub.current_period_end > v_now) THEN
       v_effective_limit := 100;
       v_plan_name := 'VentePulse Pro 100';
@@ -254,6 +288,7 @@ CREATE OR REPLACE FUNCTION public.activate_subscription(
   p_plan TEXT,
   p_reference TEXT,
   p_amount NUMERIC,
+  p_currency TEXT DEFAULT 'NGN',
   p_metadata JSONB DEFAULT '{}'::jsonb
 )
 RETURNS JSONB AS $$
@@ -293,7 +328,7 @@ BEGIN
     user_id, plan, amount, currency, provider, reference, status, raw_metadata, paid_at
   )
   VALUES (
-    p_user_id, p_plan, p_amount, 'NGN', 'bachs', p_reference, 'success', p_metadata, timezone('utc'::text, now())
+    p_user_id, p_plan, p_amount, COALESCE(p_currency, 'NGN'), 'bachs', p_reference, 'success', p_metadata, timezone('utc'::text, now())
   )
   ON CONFLICT (reference) DO NOTHING;
 
@@ -307,7 +342,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-GRANT EXECUTE ON FUNCTION public.activate_subscription(UUID, TEXT, TEXT, NUMERIC, JSONB) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.activate_subscription(UUID, TEXT, TEXT, NUMERIC, TEXT, JSONB) TO authenticated, service_role;
 
 
 -- 6. AUTOMATIC PROVISIONING: UPDATE USER SIGNUP TRIGGER & BACKFILL EXISTING PROFILES

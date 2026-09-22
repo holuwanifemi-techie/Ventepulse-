@@ -3,16 +3,18 @@ import { useAuth } from '../../context/AuthContext';
 import { getLeads } from '../../lib/leadService';
 import { checkIsAdmin } from '../../lib/adminService';
 import { supabase } from '../../lib/supabase';
-import { Lead, LeadStage, Business } from '../../types/database';
+import { Lead, LeadStage, Business, UserEffectivePlan } from '../../types/database';
 import { AddLeadModal } from './AddLeadModal';
 import { EditLeadModal } from './EditLeadModal';
 import { LeadDetailsModal } from './LeadDetailsModal';
 import { ImportLeadsModal } from './ImportLeadsModal';
+import { PricingUpgradeModal } from '../subscription/PricingUpgradeModal';
+import { getUserPlan } from '../../lib/subscriptionService';
 import { UserDashboardView } from '../dashboard/UserDashboardView';
 import { UserSettingsView } from '../settings/UserSettingsView';
 import { AutomationsView } from '../automations/AutomationsView';
 import { VentepulseLogo } from '../brand/VentepulseLogo';
-import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet, Settings, Zap } from 'lucide-react';
+import { Search, Plus, Phone, Calendar, Layers, Loader2, UserX, LogOut, ShieldCheck, LayoutDashboard, ListFilter, FileSpreadsheet, Settings, Zap, Crown } from 'lucide-react';
 
 const STAGE_FILTERS: (LeadStage | 'All')[] = [
   'All',
@@ -45,6 +47,10 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
   const [selectedLeadForEdit, setSelectedLeadForEdit] = useState<Lead | null>(null);
   const [selectedLeadForDetails, setSelectedLeadForDetails] = useState<Lead | null>(null);
 
+  // Subscription Plan State
+  const [userPlan, setUserPlan] = useState<UserEffectivePlan | null>(null);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+
   const fetchLeads = useCallback(async () => {
     if (!user) return;
     setLoading(true);
@@ -53,8 +59,15 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
     setLoading(false);
   }, [user, searchQuery, activeStageFilter]);
 
+  const fetchUserPlan = useCallback(async () => {
+    if (!user) return;
+    const { data } = await getUserPlan(user.id, user.email);
+    if (data) setUserPlan(data);
+  }, [user]);
+
   useEffect(() => {
     fetchLeads();
+    fetchUserPlan();
 
     if (user) {
       checkIsAdmin(user.id, user.email).then(setIsAdmin);
@@ -67,6 +80,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
           { event: '*', schema: 'public', table: 'leads', filter: `user_id=eq.${user.id}` },
           () => {
             fetchLeads();
+            fetchUserPlan();
           }
         )
         .subscribe();
@@ -75,7 +89,7 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
         supabase.removeChannel(leadChannel);
       };
     }
-  }, [fetchLeads, user]);
+  }, [fetchLeads, fetchUserPlan, user]);
 
   const formatDate = (dateString: string) => {
     try {
@@ -129,6 +143,36 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Live Plan Status Badge on Header Right */}
+          {userPlan && (
+            <button
+              type="button"
+              onClick={() => setIsPricingModalOpen(true)}
+              className="py-1.5 px-2.5 bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/40 rounded-xl flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer shadow-sm"
+              title="Click to view plan details & upgrade"
+            >
+              {userPlan.is_admin || userPlan.role === 'owner' ? (
+                <>
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300 font-bold">{userPlan.role === 'owner' ? 'Owner' : 'Admin'}</span>
+                </>
+              ) : userPlan.is_pro ? (
+                <>
+                  <Crown className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-amber-300 font-bold">{userPlan.plan === 'pro_100' ? 'Pro 100' : 'Pro 500'}</span>
+                  <span className="text-slate-400 text-[10px] font-mono">({userPlan.current_leads}/{userPlan.lead_limit})</span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-slate-300 font-medium">Free</span>
+                  <span className="text-slate-400 text-[10px] font-mono">({userPlan.current_leads}/{userPlan.lead_limit})</span>
+                  <span className="text-[10px] bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded font-extrabold ml-0.5">Upgrade</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Admin Portal Button */}
           {isAdmin && onOpenAdmin && (
             <button
@@ -407,6 +451,17 @@ export const LeadList: React.FC<LeadListProps> = ({ business, onOpenAdmin, onNav
         onClose={() => setSelectedLeadForDetails(null)}
         onEdit={(leadToEdit) => setSelectedLeadForEdit(leadToEdit)}
         onDeleteSuccess={fetchLeads}
+      />
+
+      <PricingUpgradeModal
+        isOpen={isPricingModalOpen}
+        onClose={() => {
+          setIsPricingModalOpen(false);
+          fetchUserPlan();
+        }}
+        userId={user?.id || ''}
+        userEmail={user?.email || ''}
+        currentPlan={userPlan?.plan}
       />
     </div>
   );

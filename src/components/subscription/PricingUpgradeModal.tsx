@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Zap, Crown, Shield, Check, ExternalLink } from 'lucide-react';
-import { getBachsCheckoutUrl } from '../../lib/subscriptionService';
+import { getBachsCheckoutUrl, CheckoutCurrency } from '../../lib/subscriptionService';
 
 interface PricingUpgradeModalProps {
   isOpen: boolean;
@@ -17,13 +17,15 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
   userEmail,
   currentPlan = 'free',
 }) => {
+  const [currency, setCurrency] = useState<CheckoutCurrency>('NGN');
+
   if (!isOpen) return null;
 
   const plans = [
     {
       key: 'free',
       name: 'Free',
-      price: '₦0',
+      price: currency === 'NGN' ? '₦0' : '$0',
       period: 'forever',
       leads: 10,
       icon: Shield,
@@ -38,7 +40,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
     {
       key: 'pro_100',
       name: 'Pro 100',
-      price: '₦9,999',
+      price: currency === 'NGN' ? '₦9,999' : '$7.52',
       period: '/month',
       leads: 100,
       icon: Zap,
@@ -53,7 +55,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
     {
       key: 'pro_500',
       name: 'Pro 500',
-      price: '₦19,999',
+      price: currency === 'NGN' ? '₦19,999' : '$15.02',
       period: '/month',
       leads: 500,
       icon: Crown,
@@ -68,7 +70,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
   ];
 
   const handleUpgrade = (planKey: 'pro_100' | 'pro_500') => {
-    const url = getBachsCheckoutUrl(planKey, userEmail, userId);
+    const url = getBachsCheckoutUrl(planKey, userEmail, userId, currency);
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -81,13 +83,41 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
             <h2 className="text-lg font-extrabold text-white">Upgrade Your Plan</h2>
             <p className="text-xs text-slate-400 mt-0.5">Choose a plan to unlock more leads and features</p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Currency Selector */}
+            <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+              <button
+                type="button"
+                onClick={() => setCurrency('NGN')}
+                className={`px-2.5 py-1 rounded-lg font-semibold transition-all ${
+                  currency === 'NGN'
+                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                ₦ NGN
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('USD')}
+                className={`px-2.5 py-1 rounded-lg font-semibold transition-all ${
+                  currency === 'USD'
+                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                $ USD
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Plans Grid */}
@@ -153,7 +183,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
           </div>
 
           <p className="text-center text-[10px] text-slate-500 mt-4">
-            Secure payment via Bachs. Subscription activates automatically after payment confirmation.
+            Secure payment checkout via Bachs. Subscription activates upon confirmed payment verification.
           </p>
         </div>
       </div>

@@ -81,7 +81,7 @@ export interface AdminPlatformStats {
 }
 
 
-export type SubscriptionPlan = 'free' | 'pro_100' | 'pro_500' | 'admin';
+export type SubscriptionPlan = 'free' | 'pro_100' | 'pro_500' | 'admin' | 'owner';
 export type SubscriptionStatus = 'active' | 'expired' | 'canceled';
 
 export interface Subscription {

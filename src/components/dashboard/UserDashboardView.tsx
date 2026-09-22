@@ -157,28 +157,28 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
 
       {/* PLAN STATUS CARD */}
       {userPlan && (() => {
-        const isAdmin = userPlan.plan === 'admin';
+        const isOwnerOrAdmin = userPlan.role === 'owner' || userPlan.plan === 'owner' || userPlan.role === 'admin' || userPlan.plan === 'admin' || userPlan.is_admin;
         const isPro = userPlan.plan === 'pro_100' || userPlan.plan === 'pro_500';
-        const isExpired = userPlan.plan === 'pro_expired';
-        const isFree = userPlan.plan === 'free';
+        const isExpired = userPlan.status === 'expired';
+        const isFree = userPlan.plan === 'free' && !isExpired;
         const usedLeads = userPlan.current_leads;
         const maxLeads = userPlan.lead_limit;
         const pct = maxLeads > 0 ? Math.min((usedLeads / maxLeads) * 100, 100) : 0;
         const showUpgrade = isFree || isExpired;
 
-        const planLabel = isAdmin
-          ? 'Administrator'
+        const planLabel = isOwnerOrAdmin
+          ? (userPlan.role === 'owner' || userPlan.plan === 'owner' ? 'Owner Access' : 'Administrator')
           : isPro
           ? userPlan.plan === 'pro_100' ? 'Pro 100' : 'Pro 500'
           : isExpired
           ? 'Pro (Expired)'
           : 'Free Plan';
 
-        const planIcon = isAdmin ? Shield : isPro ? Crown : isExpired ? Zap : TrendingUp;
+        const planIcon = isOwnerOrAdmin ? Shield : isPro ? Crown : isExpired ? Zap : TrendingUp;
         const PlanIcon = planIcon;
         const barColor = pct >= 90 ? 'bg-rose-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-500';
-        const iconColor = isAdmin ? 'text-emerald-400' : isPro ? 'text-amber-400' : isExpired ? 'text-rose-400' : 'text-slate-400';
-        const badgeColor = isAdmin
+        const iconColor = isOwnerOrAdmin ? 'text-emerald-400' : isPro ? 'text-amber-400' : isExpired ? 'text-rose-400' : 'text-slate-400';
+        const badgeColor = isOwnerOrAdmin
           ? 'bg-emerald-950/60 text-emerald-400 border-emerald-700/50'
           : isPro
           ? 'bg-amber-950/60 text-amber-400 border-amber-700/50'
@@ -201,7 +201,7 @@ export const UserDashboardView: React.FC<UserDashboardViewProps> = ({
                     <span className="text-[10px] text-rose-400">Subscription ended — upgrade to add leads</span>
                   )}
                 </div>
-                {!isAdmin && (
+                {!isOwnerOrAdmin && (
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                       <div

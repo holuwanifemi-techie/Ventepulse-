@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { getUserPlan } from '../../lib/subscriptionService';
+import { PricingUpgradeModal } from '../subscription/PricingUpgradeModal';
 import { LeadStage } from '../../types/database';
-import { X, UploadCloud, FileSpreadsheet, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, UploadCloud, FileSpreadsheet, Loader2, AlertCircle, CheckCircle2, Zap } from 'lucide-react';
 
 interface ImportLeadsModalProps {
   businessId: string;
@@ -22,12 +24,15 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isLimitExceeded, setIsLimitExceeded] = useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMessage(null);
     setSuccessMessage(null);
+    setIsLimitExceeded(false);
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       const validTypes = ['.csv', '.xlsx', '.xls', 'text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
@@ -44,9 +49,9 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
   };
 
   const parseCSVText = (text: string) => {
-    const lines = text.split(/\r\n|\n/).filter(line => line.trim());
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     if (lines.length < 2) {
-      throw new Error('The uploaded file is empty or missing data rows.');
+      throw new Error('File does not contain any lead records. Please include header and at least one data row.');
     }
 
     const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
@@ -102,6 +107,7 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
+    setIsLimitExceeded(false);
 
     if (!file || !user) {
       setErrorMessage('Please select a CSV or Excel file to import.');
@@ -114,6 +120,26 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
       const text = await file.text();
       const rows = parseCSVText(text);
 
+      // Validate subscription plan headroom before batch insertion
+      const { data: userPlan } = await getUserPlan(user.id, user.email);
+      const isOwnerOrAdmin = userPlan.is_admin || userPlan.role === 'owner' || userPlan.plan === 'owner' || userPlan.plan === 'admin';
+      
+      if (!isOwnerOrAdmin) {
+        const availableSlots = Math.max(0, userPlan.lead_limit - userPlan.current_leads);
+        if (availableSlots <= 0) {
+          setIsLimitExceeded(true);
+          setErrorMessage(`You have reached your limit of ${userPlan.lead_limit} leads on your ${userPlan.plan_name} plan. Please upgrade to import more leads.`);
+          setLoading(false);
+          return;
+        }
+        if (rows.length > availableSlots) {
+          setIsLimitExceeded(true);
+          setErrorMessage(`Your file contains ${rows.length} leads, but you only have ${availableSlots} slot(s) remaining on your ${userPlan.plan_name} plan (${userPlan.current_leads}/${userPlan.lead_limit} used). Upgrade to import all.`);
+          setLoading(false);
+          return;
+        }
+      }
+
       // Perform batch insert into Supabase leads table
       const { data, error } = await supabase
         .from('leads')
@@ -123,6 +149,9 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
       setLoading(false);
 
       if (error) {
+        if (error.message.includes('LEAD_LIMIT_EXCEEDED')) {
+          setIsLimitExceeded(true);
+        }
         setErrorMessage(`Failed to import leads: ${error.message}`);
       } else {
         const count = data?.length || rows.length;
@@ -164,9 +193,21 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{errorMessage}</span>
+          <div className="space-y-2">
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+            {isLimitExceeded && (
+              <button
+                type="button"
+                onClick={() => setIsPricingModalOpen(true)}
+                className="w-full py-2 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>Upgrade Plan to Import More</span>
+              </button>
+            )}
           </div>
         )}
 
@@ -228,6 +269,13 @@ export const ImportLeadsModal: React.FC<ImportLeadsModalProps> = ({
         </form>
 
       </div>
+
+      <PricingUpgradeModal
+        isOpen={isPricingModalOpen}
+        onClose={() => setIsPricingModalOpen(false)}
+        userId={user?.id || ''}
+        userEmail={user?.email || ''}
+      />
     </div>
   );
 };
