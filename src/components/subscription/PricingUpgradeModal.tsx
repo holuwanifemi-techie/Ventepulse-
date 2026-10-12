@@ -75,15 +75,15 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-900/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-slate-800 bg-slate-900/95 shrink-0">
           <div>
-            <h2 className="text-lg font-extrabold text-white">Upgrade Your Plan</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Choose a plan to unlock more leads and features</p>
+            <h2 className="text-base sm:text-lg font-extrabold text-white">Upgrade Your Plan</h2>
+            <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Choose a plan to unlock more leads and features</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-2.5">
             {/* Currency Selector */}
             <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
               <button
@@ -113,7 +113,8 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
+              title="Close modal"
             >
               <X className="w-4 h-4" />
             </button>
@@ -121,7 +122,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
         </div>
 
         {/* Plans Grid */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {plans.map((plan) => {
               const Icon = plan.icon;
@@ -164,14 +165,14 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
                   </ul>
 
                   {isCurrentPlan ? (
-                    <div className="py-2 px-3 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold text-center">
+                    <div className="py-2.5 px-3 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold text-center min-h-[44px] flex items-center justify-center">
                       Current Plan
                     </div>
                   ) : plan.cta ? (
                     <button
                       type="button"
                       onClick={() => handleUpgrade(plan.key as 'pro_100' | 'pro_500')}
-                      className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${plan.ctaStyle}`}
+                      className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer min-h-[44px] ${plan.ctaStyle}`}
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       {plan.cta}
@@ -182,7 +183,7 @@ export const PricingUpgradeModal: React.FC<PricingUpgradeModalProps> = ({
             })}
           </div>
 
-          <p className="text-center text-[10px] text-slate-500 mt-4">
+          <p className="text-center text-[10px] text-slate-500 pt-1 pb-2">
             Secure payment checkout via Bachs. Subscription activates upon confirmed payment verification.
           </p>
         </div>

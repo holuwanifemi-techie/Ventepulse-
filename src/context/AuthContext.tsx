@@ -11,6 +11,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState<boolean>(false);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
 
   // Helper to ensure profile record exists in public.profiles table
   const syncUserProfile = async (currentUser: User) => {
@@ -31,6 +33,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    // 0. Inspect URL for recovery tokens or error params on initial mount
+    try {
+      const hashStr = window.location.hash ? window.location.hash.substring(1) : '';
+      const searchStr = window.location.search ? window.location.search.substring(1) : '';
+      const params = new URLSearchParams(hashStr || searchStr);
+
+      if (params.get('error') || params.get('error_description') || params.get('error_code')) {
+        const errorDesc = params.get('error_description')?.replace(/\+/g, ' ') || 'Password reset link is invalid or has expired.';
+        setRecoveryError(errorDesc);
+        // Clean URL to prevent repeated error trigger
+        window.history.replaceState(null, '', window.location.pathname);
+      } else if (params.get('type') === 'recovery' || hashStr.includes('type=recovery')) {
+        setIsPasswordRecovery(true);
+      }
+    } catch (urlErr) {
+      console.warn('[AuthContext] URL parse notice:', urlErr);
+    }
+
     // 1. Fetch active session on initial mount
     const initializeAuth = async () => {
       try {
@@ -49,9 +69,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuth();
 
-    // 2. Listen to real-time auth state changes (sign in, sign out, token refresh)
+    // 2. Listen to real-time auth state changes (sign in, sign out, token refresh, password recovery)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, currentSession) => {
+      (event, currentSession) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsPasswordRecovery(true);
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
+          setLoading(false);
+          // Clean hash so access tokens do not linger in address bar
+          if (window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+          return;
+        }
+
+        if (event === 'SIGNED_OUT') {
+          setIsPasswordRecovery(false);
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -176,18 +216,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
+      if (error) {
+        return { error: new Error(formatAuthError(error)) };
+      }
       setUser(null);
       setSession(null);
-      return { error: error ? new Error(formatAuthError(error)) : null };
+      return { error: null };
     } catch (err: any) {
-      setUser(null);
-      setSession(null);
       return { error: new Error(formatAuthError(err)) };
     }
   };
 
+  // Update password (used during recovery or password reset)
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        return { error: new Error(formatAuthError(error)) };
+      }
+
+      setIsPasswordRecovery(false);
+      setRecoveryError(null);
+
+      // Sign out the temporary recovery session so the user signs in fresh
+      try {
+        await supabase.auth.signOut();
+      } catch (signOutErr) {
+        console.warn('[AuthContext] Recovery signout notice:', signOutErr);
+      }
+      setUser(null);
+      setSession(null);
+
+      return { error: null };
+    } catch (err: any) {
+      return { error: new Error(formatAuthError(err)) };
+    }
+  };
+
+  const clearPasswordRecovery = () => {
+    setIsPasswordRecovery(false);
+    setRecoveryError(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        isPasswordRecovery,
+        recoveryError,
+        signUp,
+        signIn,
+        signOut,
+        updatePassword,
+        clearPasswordRecovery,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

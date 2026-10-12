@@ -4,10 +4,14 @@ export interface AuthState {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isPasswordRecovery: boolean;
+  recoveryError: string | null;
 }
 
 export interface AuthContextType extends AuthState {
   signUp: (email: string, password: string) => Promise<{ session: Session | null; error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
+  clearPasswordRecovery: () => void;
 }

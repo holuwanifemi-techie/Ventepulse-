@@ -4,15 +4,32 @@ import { supabase } from '../../lib/supabase';
 import { isValidEmail, formatAuthError } from '../../lib/authErrorTranslator';
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, CheckCircle2, ArrowLeft } from 'lucide-react';
 
-export const LoginForm: React.FC = () => {
-  const { signIn } = useAuth();
+interface LoginFormProps {
+  initialSuccessMessage?: string | null;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({ initialSuccessMessage }) => {
+  const { signIn, recoveryError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isResetMode, setIsResetMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(initialSuccessMessage || null);
+
+  React.useEffect(() => {
+    if (recoveryError) {
+      setErrorMessage(recoveryError);
+      setIsResetMode(true);
+    }
+  }, [recoveryError]);
+
+  React.useEffect(() => {
+    if (initialSuccessMessage) {
+      setSuccessMessage(initialSuccessMessage);
+    }
+  }, [initialSuccessMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
